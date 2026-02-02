@@ -1,11 +1,9 @@
 package co.za.pokie.networking
 
 import co.za.pokie.networking.dto.PokemonDetailsDto
-import co.za.pokie.networking.dto.PokemonResponseDto
 import co.za.pokie.networking.util.mapToPokemon
 import kotlinx.serialization.json.Json
 import org.junit.Assert.assertEquals
-import org.junit.Assert.assertNull
 import org.junit.Test
 
 class MapperTest {
@@ -28,18 +26,10 @@ class MapperTest {
         assertEquals(29, result.weight)
         assertEquals(39, result.baseExperience)
         assertEquals("caterpie", result.name)
-        assertEquals("caterpie", result.image)
-    }
-
-    @Test
-    fun `toDay should return correct day`() {
-        val s = loadJson("pokemonList.json")
-        val c = loadJson("pokemonDetail.json")
-
-        val a = json.decodeFromString<PokemonResponseDto>(s)
-        val b = json.decodeFromString<PokemonDetailsDto>(c)
-        assertNull(b)
-        assertNull(a)
+        assertEquals(
+            "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/10.png",
+            result.image
+        )
     }
 
     private fun loadJson(name: String): String {

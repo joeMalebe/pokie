@@ -1,7 +1,7 @@
 package co.za.pokie.networking.repository
 
-import co.za.pokie.model.Pokemon
-import co.za.pokie.model.Pokemon1
+import co.za.pokie.domain.model.Pokemon
+import co.za.pokie.domain.model.Pokemon1
 import co.za.pokie.networking.PokieApiService
 import co.za.pokie.networking.util.mapToPokemon
 import co.za.pokie.networking.util.ApiResult
