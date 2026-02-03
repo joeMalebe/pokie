@@ -14,7 +14,6 @@ data class Pokemon(
 
 data class Stat(val name: String, val value: Float)
 
-
 data class HomeViewState(
     val pokemonList: List<Pokemon> = listOf(),
     val isLoading: Boolean = false,

@@ -158,5 +158,4 @@ object PreviewData {
             baseExperience = 145,
         )
     )
-
 }

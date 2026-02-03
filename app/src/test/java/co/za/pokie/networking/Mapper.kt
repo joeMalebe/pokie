@@ -35,7 +35,7 @@ class MapperTest {
         assertEquals("0.1764706", result.stats.first().value.toString())
     }
 
-    private fun loadJson(name: String): String {
+    fun loadJson(name: String): String {
         return this::class.java.classLoader!!
             .getResource(name)!!
             .readText()

@@ -17,7 +17,32 @@ class PokieRepository @Inject constructor(
     private val client: PokieApiService,
     private val dispatcher: CoroutineDispatcher = ioDispatcher()
 ) {
-    suspend fun getPokemonList(): ApiResult<List<PokemonData>> {
+    fun getPokemons(): Flow<ApiResult<List<Pokemon>>> {
+        return flow {
+            when (val pokemonList = getPokemonList()) {
+                is ApiResult.Success -> {
+                    val pokemonDetailsList = mutableListOf<Pokemon>()
+                    pokemonList.data.forEach {
+                        val pokemonDetail = getPokemonDetail(it.url)
+                        if (pokemonDetail is ApiResult.Success) {
+                            pokemonDetailsList.add(pokemonDetail.data)
+                        }
+                    }
+                    emit(ApiResult.Success(pokemonDetailsList))
+                }
+
+                is ApiResult.Error -> {
+                    emit(ApiResult.Error(pokemonList.message))
+                }
+
+                is ApiResult.NoInternetError -> {
+                    emit(ApiResult.NoInternetError(pokemonList.message))
+                }
+            }
+        }
+    }
+
+    private suspend fun getPokemonList(): ApiResult<List<PokemonData>> {
         return withContext(dispatcher) {
             val response = callApiClient {
                 client.getPokemonList()
@@ -40,7 +65,7 @@ class PokieRepository @Inject constructor(
         }
     }
 
-    suspend fun getPokemonDetail(url: String): ApiResult<Pokemon> {
+    private suspend fun getPokemonDetail(url: String): ApiResult<Pokemon> {
         return withContext(dispatcher) {
             val response = callApiClient {
                 client.getResourceByUrl(url)
@@ -57,31 +82,6 @@ class PokieRepository @Inject constructor(
                 is ApiResult.NoInternetError -> {
                     ApiResult.NoInternetError(response.message)
 
-                }
-            }
-        }
-    }
-
-    fun getPokemons(): Flow<ApiResult<List<Pokemon>>> {
-        return flow {
-            when (val pokemonList = getPokemonList()) {
-                is ApiResult.Success -> {
-                    val pokemonDetailsList = mutableListOf<Pokemon>()
-                    pokemonList.data.forEach {
-                        val pokemonDetail = getPokemonDetail(it.url)
-                        if (pokemonDetail is ApiResult.Success) {
-                            pokemonDetailsList.add(pokemonDetail.data)
-                        }
-                    }
-                    emit(ApiResult.Success(pokemonDetailsList))
-                }
-
-                is ApiResult.Error -> {
-                    emit(ApiResult.Error(pokemonList.message))
-                }
-
-                is ApiResult.NoInternetError -> {
-                    emit(ApiResult.NoInternetError(pokemonList.message))
                 }
             }
         }
