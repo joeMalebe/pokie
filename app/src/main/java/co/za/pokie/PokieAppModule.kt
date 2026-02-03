@@ -1,4 +1,4 @@
-package co.za.pokieapp
+package co.za.pokie
 
 import co.za.pokie.networking.PokieApiService
 import co.za.pokie.networking.PokieClient

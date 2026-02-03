@@ -41,7 +41,6 @@ fun DetailsScreen(name: String, viewModel: HomeViewModel = hiltViewModel()) {
     viewModel.getPokemonDetails(name = name)?.let { DetailsContent(pokemon = it) }
 }
 
-
 @Composable
 @Preview(showSystemUi = true)
 fun DetailsContent(
@@ -55,7 +54,6 @@ fun DetailsContent(
             .padding(16.dp)
     ) {
         item {
-
             Column(Modifier.fillMaxWidth(), horizontalAlignment = CenterHorizontally) {
                 AsyncImage(
                     contentScale = ContentScale.Crop,

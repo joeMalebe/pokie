@@ -29,7 +29,6 @@ fun PokieNavHost() {
                 is Route.Home -> {
                     NavEntry(key) {
                         HomeScreen(viewModel = viewModel, onPokemonClick = {
-                            viewModel.selectedPokemonName = it
                             backStack.add(Route.Details(it))
                         })
                     }

@@ -55,7 +55,6 @@ fun HomeScreen(
             }
 
             errorMessage != null -> {
-
                 Error(errorMessage = errorMessage)
             }
 

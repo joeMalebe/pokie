@@ -23,8 +23,6 @@ class HomeViewModel @Inject constructor(
     private val _homeViewData = MutableStateFlow(HomeViewState(isLoading = true))
     val homeViewState = _homeViewData.asStateFlow()
 
-    var selectedPokemonName = ""
-
     fun loadPokemons(coroutineContext: CoroutineContext = Dispatchers.IO) {
         viewModelScope.launch(coroutineContext) {
             if(_homeViewData.value.isDataLoaded) return@launch
@@ -46,6 +44,4 @@ class HomeViewModel @Inject constructor(
 
     fun getPokemonDetails(name: String): Pokemon? =
         this._homeViewData.value.pokemonList.firstOrNull { it.name == name }
-
-
 }
