@@ -173,7 +173,7 @@ fun LabelledText(label: String, value: String, modifier: Modifier = Modifier) {
 @Preview(showSystemUi = true)
 fun Loader(modifier: Modifier = Modifier) {
     Box(modifier = modifier.fillMaxSize(), contentAlignment = Center) {
-        CircularProgressIndicator()
+        LoadingDotsPulse()
     }
 }
 
