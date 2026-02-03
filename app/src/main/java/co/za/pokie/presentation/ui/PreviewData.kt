@@ -22,7 +22,8 @@ object PreviewData {
                     name = "defense",
                     value = 0.84f
                 ),
-            ), type = listOf("grass", "poison")
+            ),
+            type = listOf("grass", "poison"),
         ),
         Pokemon(
             name = "ivysaur",

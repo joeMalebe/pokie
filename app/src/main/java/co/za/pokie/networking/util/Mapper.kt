@@ -19,7 +19,7 @@ fun PokemonDetailsDto.mapToPokemon() = Pokemon(
     baseExperience = this.baseExperience,
     abilities = this.abilities.map { it.ability.name },
     stats = this.stats.map { Stat(name = it.stat.name, value = statProgress(it.baseStat)) },
-    type = this.types.map { it.type.name }
+    type = this.types.map { it.type.name },
 )
 
 fun statProgress(value: Int, max: Int = MAX_BASE_SCORE): Float {

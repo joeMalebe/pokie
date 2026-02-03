@@ -44,4 +44,15 @@ class HomeViewModel @Inject constructor(
 
     fun getPokemonDetails(name: String): Pokemon? =
         this._homeViewData.value.pokemonList.firstOrNull { it.name == name }
+
+    fun filterList(search: String) {
+        _homeViewData.update {
+            it.copy(searchQuery = search, filteredList = it.pokemonList.filter { pokemon ->
+                pokemon.name.contains(
+                    search,
+                    ignoreCase = true
+                )
+            })
+        }
+    }
 }
