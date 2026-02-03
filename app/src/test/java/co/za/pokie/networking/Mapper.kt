@@ -30,6 +30,9 @@ class MapperTest {
             "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/10.png",
             result.image
         )
+        assertEquals("shield-dust", result.abilities.first())
+        assertEquals("bug", result.type.first())
+        assertEquals("0.1764706", result.stats.first().value.toString())
     }
 
     private fun loadJson(name: String): String {

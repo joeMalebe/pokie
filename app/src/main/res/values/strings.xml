@@ -3,4 +3,8 @@
     <string name="please_try_again_later">Please try again later.</string>
     <string name="error_occurred">Error occurred.</string>
     <string name="experience">Experience</string>
+    <string name="abilities">Abilities</string>
+    <string name="weight">Weight</string>
+    <string name="height">Height</string>
+    <string name="stats">Stats</string>
 </resources>
