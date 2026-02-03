@@ -13,6 +13,7 @@ import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -26,6 +27,7 @@ import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextOverflow.Companion.Ellipsis
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -33,6 +35,8 @@ import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import co.za.pokie.R
 import co.za.pokie.domain.model.Pokemon
 import co.za.pokie.domain.viewmodel.HomeViewModel
+import co.za.pokie.presentation.theme.PokieAppTheme
+import co.za.pokie.presentation.ui.PreviewData
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 
@@ -42,7 +46,6 @@ fun DetailsScreen(name: String, viewModel: HomeViewModel = hiltViewModel()) {
 }
 
 @Composable
-@Preview(showSystemUi = true)
 fun DetailsContent(
     modifier: Modifier = Modifier,
     pokemon: Pokemon = PreviewData.pokemonList.first()
@@ -69,6 +72,7 @@ fun DetailsContent(
         item {
             Column(Modifier.fillMaxWidth(), verticalArrangement = spacedBy(16.dp)) {
                 Bio(pokemon)
+                HorizontalDivider()
                 BasicInfo(pokemon)
                 Abilities(pokemon)
                 Stats(pokemon, Modifier.fillMaxWidth())
@@ -125,7 +129,7 @@ private fun Stats(pokemon: Pokemon, modifier: Modifier = Modifier) {
 @Composable
 private fun Abilities(pokemon: Pokemon, modifier: Modifier = Modifier) {
     Column(modifier, verticalArrangement = spacedBy(8.dp)) {
-        Text(stringResource(R.string.abilities), fontSize = 16.sp)
+        Text(stringResource(R.string.abilities), fontSize = 14.sp)
         Row(Modifier.fillMaxWidth(), horizontalArrangement = spacedBy(8.dp)) {
             pokemon.abilities.forEach {
                 Vitals(value = it, Modifier.weight(0.3f))
@@ -138,7 +142,7 @@ private fun Abilities(pokemon: Pokemon, modifier: Modifier = Modifier) {
 fun PillTag(text: String, color: Color, modifier: Modifier = Modifier) {
     Text(
         text = text,
-        color = Color.White,
+        color = MaterialTheme.colorScheme.onPrimary,
         modifier = modifier
             .clip(RoundedCornerShape(50))
             .background(color)
@@ -149,7 +153,7 @@ fun PillTag(text: String, color: Color, modifier: Modifier = Modifier) {
 @Composable
 private fun Vitals(value: String, modifier: Modifier = Modifier, label: String? = null) {
     Column(modifier.fillMaxWidth(), verticalArrangement = spacedBy(8.dp)) {
-        label?.let { Text(it, fontSize = 16.sp) }
+        label?.let { Text(it, fontSize = 14.sp) }
         Box(
             contentAlignment = Center, modifier =
                 Modifier
@@ -157,7 +161,16 @@ private fun Vitals(value: String, modifier: Modifier = Modifier, label: String? 
                     .border(width = 1.dp, color = MaterialTheme.colorScheme.primary)
                     .padding(16.dp)
         ) {
-            Text(value, fontSize = 20.sp)
+            Text(value, fontSize = 18.sp, maxLines = 1, overflow = Ellipsis)
         }
+    }
+}
+
+@Composable
+@Preview(showSystemUi = true)
+fun DetailsContentPreview(
+) {
+    PokieAppTheme() {
+        DetailsContent(pokemon = PreviewData.pokemonList.first())
     }
 }

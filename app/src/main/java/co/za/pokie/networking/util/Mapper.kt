@@ -22,6 +22,5 @@ fun PokemonDetailsDto.mapToPokemon() = Pokemon(
     type = this.types.map { it.type.name },
 )
 
-fun statProgress(value: Int, max: Int = MAX_BASE_SCORE): Float {
-    return (value.coerceIn(0, max)).toFloat() / max.toFloat()
-}
+private fun statProgress(value: Int, max: Int = MAX_BASE_SCORE) =
+    (value.coerceIn(0, max)).toFloat() / max.toFloat()

@@ -18,24 +18,43 @@ import kotlin.coroutines.CoroutineContext
 @HiltViewModel
 class HomeViewModel @Inject constructor(
     private val pokieRepository: PokieRepository,
-    ) : ViewModel() {
+) : ViewModel() {
 
     private val _homeViewData = MutableStateFlow(HomeViewState(isLoading = true))
     val homeViewState = _homeViewData.asStateFlow()
 
     fun loadPokemons(coroutineContext: CoroutineContext = Dispatchers.IO) {
         viewModelScope.launch(coroutineContext) {
-            if(_homeViewData.value.isDataLoaded) return@launch
+            if (_homeViewData.value.isDataLoaded) return@launch
             pokieRepository.getPokemons().collect { result ->
                 when (result) {
                     is ApiResult.Success -> {
-                        _homeViewData.update {  it.copy(isLoading = false, isDataLoaded = true, pokemonList = result.data) }
+                        _homeViewData.update { currentState ->
+                            currentState.copy(
+                                isLoading = false,
+                                isDataLoaded = true,
+                                pokemonList = (currentState.pokemonList + result.data).distinctBy { it.name })
+                        }
                     }
+
                     is ApiResult.Error -> {
-                        _homeViewData.update {  it.copy(isLoading = false, isDataLoaded = true, errorDescription = result.message) }
+                        _homeViewData.update { currentState ->
+                            currentState.copy(
+                                isLoading = false,
+                                isDataLoaded = true,
+                                errorDescription = result.message
+                            )
+                        }
                     }
+
                     is ApiResult.NoInternetError -> {
-                        _homeViewData.update {  it.copy(isLoading = false, isDataLoaded = true, errorDescription = result.message) }
+                        _homeViewData.update { currentState ->
+                            currentState.copy(
+                                isLoading = false,
+                                isDataLoaded = true,
+                                errorDescription = result.message
+                            )
+                        }
                     }
                 }
             }

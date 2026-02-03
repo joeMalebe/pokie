@@ -1,4 +1,4 @@
-package co.za.pokie.networking
+package co.za.pokie.networking.service
 
 import kotlinx.serialization.json.Json
 import okhttp3.MediaType.Companion.toMediaType
@@ -11,7 +11,9 @@ class PokieClient(okHttpClient: OkHttpClient) {
     val json = Json {
         ignoreUnknownKeys
     }
-    val client = Retrofit.Builder().client(okHttpClient).addConverterFactory(
-        json.asConverterFactory("application/json".toMediaType())
-    ).baseUrl(" https://pokeapi.co/").build()
+    val client = Retrofit
+        .Builder()
+        .client(okHttpClient)
+        .addConverterFactory(json.asConverterFactory("application/json".toMediaType()))
+        .baseUrl(" https://pokeapi.co/").build()
 }

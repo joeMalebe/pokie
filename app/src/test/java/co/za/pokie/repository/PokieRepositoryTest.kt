@@ -2,7 +2,7 @@ package co.za.pokie.repository
 
 import co.za.pokie.domain.model.Pokemon
 import co.za.pokie.domain.viewmodel.HomeViewModel
-import co.za.pokie.networking.PokieApiService
+import co.za.pokie.networking.service.PokieApiService
 import co.za.pokie.networking.repository.PokieRepository
 import co.za.pokie.networking.util.ApiResult
 import junit.framework.TestCase.assertEquals
@@ -45,7 +45,7 @@ class PokieRepositoryTest {
         val dispatcher = object : Dispatcher() {
             override fun dispatch(request: RecordedRequest): MockResponse {
                 return when (request.requestUrl.toString()) {
-                    "http://localhost:${mockWebServer.port}/api/v2/pokemon" -> MockResponse().setResponseCode(
+                    "http://localhost:${mockWebServer.port}/api/v2/pokemon?limit=100" -> MockResponse().setResponseCode(
                         200
                     )
                         .setBody(loadJson("pokemonList.json"))
@@ -81,7 +81,7 @@ class PokieRepositoryTest {
         pokiecRepository.getPokemons().toList(results)
 
         val data = (results.first() as ApiResult.Success).data
-        assertEquals(1, results.size)
+        assertEquals(4, results.size)
         assertNotNull(results)
         assertEquals(20, data.size)
     }

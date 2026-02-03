@@ -2,7 +2,7 @@ package co.za.pokie.networking.repository
 
 import co.za.pokie.domain.model.PokemonData
 import co.za.pokie.domain.model.Pokemon
-import co.za.pokie.networking.PokieApiService
+import co.za.pokie.networking.service.PokieApiService
 import co.za.pokie.networking.util.mapToPokemon
 import co.za.pokie.networking.util.ApiResult
 import co.za.pokie.networking.util.callApiClient
@@ -17,18 +17,20 @@ class PokieRepository @Inject constructor(
     private val client: PokieApiService,
     private val dispatcher: CoroutineDispatcher = ioDispatcher()
 ) {
-    fun getPokemons(): Flow<ApiResult<List<Pokemon>>> {
-        return flow {
+    fun getPokemons(): Flow<ApiResult<List<Pokemon>>> =
+        flow {
             when (val pokemonList = getPokemonList()) {
                 is ApiResult.Success -> {
                     val pokemonDetailsList = mutableListOf<Pokemon>()
-                    pokemonList.data.forEach {
-                        val pokemonDetail = getPokemonDetail(it.url)
+                    pokemonList.data.forEachIndexed { index, data ->
+                        val pokemonDetail = getPokemonDetail(data.url)
                         if (pokemonDetail is ApiResult.Success) {
                             pokemonDetailsList.add(pokemonDetail.data)
                         }
+                        if (shouldEmitResults(index, pokemonDetailsList, pokemonList)) {
+                            emit(ApiResult.Success(pokemonDetailsList))
+                        }
                     }
-                    emit(ApiResult.Success(pokemonDetailsList))
                 }
 
                 is ApiResult.Error -> {
@@ -40,10 +42,16 @@ class PokieRepository @Inject constructor(
                 }
             }
         }
-    }
 
-    private suspend fun getPokemonList(): ApiResult<List<PokemonData>> {
-        return withContext(dispatcher) {
+    private fun shouldEmitResults(
+        index: Int,
+        pokemonDetailsList: MutableList<Pokemon>,
+        pokemonList: ApiResult.Success<List<PokemonData>>
+    ): Boolean =
+        index != 0 && pokemonDetailsList.size % 5 == 0 || index == pokemonList.data.lastIndex
+
+    private suspend fun getPokemonList(): ApiResult<List<PokemonData>> =
+        withContext(dispatcher) {
             val response = callApiClient {
                 client.getPokemonList()
             }
@@ -61,12 +69,10 @@ class PokieRepository @Inject constructor(
 
                 }
             }
-
         }
-    }
 
-    private suspend fun getPokemonDetail(url: String): ApiResult<Pokemon> {
-        return withContext(dispatcher) {
+    private suspend fun getPokemonDetail(url: String): ApiResult<Pokemon> =
+        withContext(dispatcher) {
             val response = callApiClient {
                 client.getResourceByUrl(url)
             }
@@ -85,5 +91,4 @@ class PokieRepository @Inject constructor(
                 }
             }
         }
-    }
 }

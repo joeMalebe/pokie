@@ -15,6 +15,7 @@ import androidx.compose.foundation.lazy.staggeredgrid.StaggeredGridCells
 import androidx.compose.foundation.lazy.staggeredgrid.items
 import androidx.compose.material3.Card
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
@@ -106,6 +107,7 @@ fun PokemonContent(
             onValueChange = {
                 onQueryChange(it)
             })
+        HorizontalDivider()
         val items = filteredList.ifEmpty { pokemonList }
         if (searchQuery.isNotBlank() && filteredList.isEmpty()) {
             Error(
@@ -114,18 +116,19 @@ fun PokemonContent(
             )
         } else
             LazyVerticalStaggeredGrid(
-                modifier = modifier,
+                modifier = modifier.fillMaxWidth(),
                 columns = StaggeredGridCells.Fixed(2),
                 verticalItemSpacing = 16.dp,
                 horizontalArrangement = spacedBy(16.dp)
             ) {
-                items(items) { pokemon ->
+                items(items, key = { pokemon -> pokemon.name }) { pokemon ->
                     Card(modifier = Modifier.fillMaxWidth()) {
                         Column(
                             modifier = Modifier
-                                .padding(16.dp)
-                                .clickable { onPokemonClick(pokemon.name) }
-                                .fillMaxWidth(), horizontalAlignment = CenterHorizontally
+                                .fillMaxWidth()
+                                .padding(bottom =  16.dp)
+                                .clickable { onPokemonClick(pokemon.name) },
+                            horizontalAlignment = CenterHorizontally
                         ) {
                             AsyncImage(
                                 contentScale = ContentScale.Crop,
