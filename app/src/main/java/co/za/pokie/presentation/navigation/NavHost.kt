@@ -13,16 +13,16 @@ import co.za.pokie.presentation.ui.HomeScreen
 
 @Composable
 fun PokieNavHost() {
-
     val backStack = rememberNavBackStack(Route.Home)
     val viewModel = hiltViewModel<HomeViewModel>()
 
     NavDisplay(
         backStack = backStack,
-        entryDecorators = listOf(
-            rememberSaveableStateHolderNavEntryDecorator(),
-            rememberViewModelStoreNavEntryDecorator()
-        ),
+        entryDecorators =
+            listOf(
+                rememberSaveableStateHolderNavEntryDecorator(),
+                rememberViewModelStoreNavEntryDecorator(),
+            ),
         onBack = { backStack.removeLastOrNull() },
         entryProvider = { key ->
             when (key) {
@@ -42,8 +42,6 @@ fun PokieNavHost() {
 
                 else -> error("Unknown key: $key")
             }
-        }
+        },
     )
 }
-
-

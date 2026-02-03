@@ -14,7 +14,6 @@ import androidx.compose.foundation.lazy.staggeredgrid.LazyVerticalStaggeredGrid
 import androidx.compose.foundation.lazy.staggeredgrid.StaggeredGridCells
 import androidx.compose.foundation.lazy.staggeredgrid.items
 import androidx.compose.material3.Card
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
@@ -29,7 +28,6 @@ import androidx.compose.ui.Alignment.Companion.Center
 import androidx.compose.ui.Alignment.Companion.CenterHorizontally
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.layout.ModifierLocalBeyondBoundsLayout
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -49,7 +47,7 @@ import coil.request.ImageRequest
 fun HomeScreen(
     modifier: Modifier = Modifier,
     onPokemonClick: (String) -> Unit = {},
-    viewModel: HomeViewModel = hiltViewModel()
+    viewModel: HomeViewModel = hiltViewModel(),
 ) {
     val viewState by viewModel.homeViewState.collectAsStateWithLifecycle()
     LaunchedEffect(Unit) {
@@ -79,10 +77,10 @@ fun HomeScreen(
                     onPokemonClick = onPokemonClick,
                     onQueryChange = {
                         viewModel.filterList(it)
-                    })
+                    },
+                )
             }
         }
-
     }
 }
 
@@ -93,76 +91,87 @@ fun PokemonContent(
     searchQuery: String = "",
     filteredList: List<Pokemon> = listOf(),
     onPokemonClick: (id: String) -> Unit = {},
-    onQueryChange: (String) -> Unit = {}
+    onQueryChange: (String) -> Unit = {},
 ) {
     Column(verticalArrangement = spacedBy(16.dp), modifier = Modifier.padding(top = 16.dp)) {
         OutlinedTextField(
             placeholder = {
                 Text(text = stringResource(R.string.search_pokemon))
             },
-            modifier = Modifier
-                .fillMaxWidth()
-                .align(CenterHorizontally),
+            modifier =
+                Modifier
+                    .fillMaxWidth()
+                    .align(CenterHorizontally),
             value = searchQuery,
             onValueChange = {
                 onQueryChange(it)
-            })
+            },
+        )
         HorizontalDivider()
         val items = filteredList.ifEmpty { pokemonList }
         if (searchQuery.isNotBlank() && filteredList.isEmpty()) {
             Error(
                 errorHeading = stringResource(R.string.no_pokemon_found),
-                errorMessage = stringResource(R.string.please_try_again)
+                errorMessage = stringResource(R.string.please_try_again),
             )
-        } else
+        } else {
             LazyVerticalStaggeredGrid(
                 modifier = modifier.fillMaxWidth(),
                 columns = StaggeredGridCells.Fixed(2),
                 verticalItemSpacing = 16.dp,
-                horizontalArrangement = spacedBy(16.dp)
+                horizontalArrangement = spacedBy(16.dp),
             ) {
                 items(items, key = { pokemon -> pokemon.name }) { pokemon ->
                     Card(modifier = Modifier.fillMaxWidth()) {
                         Column(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(bottom =  16.dp)
-                                .clickable { onPokemonClick(pokemon.name) },
-                            horizontalAlignment = CenterHorizontally
+                            modifier =
+                                Modifier
+                                    .fillMaxWidth()
+                                    .padding(bottom = 16.dp)
+                                    .clickable { onPokemonClick(pokemon.name) },
+                            horizontalAlignment = CenterHorizontally,
                         ) {
                             AsyncImage(
                                 contentScale = ContentScale.Crop,
-                                modifier = Modifier
-                                    .heightIn(80.dp, 120.dp)
-                                    .fillMaxWidth(0.5f),
-                                model = ImageRequest.Builder(LocalContext.current)
-                                    .data(pokemon.image)
-                                    .placeholder(R.drawable.ic_launcher_foreground) // Use a local drawable as placeholder
-                                    .build(),
-                                contentDescription = pokemon.name
+                                modifier =
+                                    Modifier
+                                        .heightIn(80.dp, 120.dp)
+                                        .fillMaxWidth(0.5f),
+                                model =
+                                    ImageRequest.Builder(LocalContext.current)
+                                        .data(pokemon.image)
+                                        .placeholder(R.drawable.ic_launcher_foreground)
+                                        .build(),
+                                contentDescription = pokemon.name,
                             )
                             Column(
-                                modifier = Modifier, verticalArrangement = spacedBy(8.dp)
+                                modifier = Modifier,
+                                verticalArrangement = spacedBy(8.dp),
                             ) {
                                 Text(
                                     text = pokemon.name,
                                     fontSize = 20.sp,
-                                    fontWeight = FontWeight.Bold
+                                    fontWeight = FontWeight.Bold,
                                 )
                                 LabelledText(
                                     stringResource(R.string.experience),
-                                    pokemon.baseExperience.toString()
+                                    pokemon.baseExperience.toString(),
                                 )
                             }
                         }
                     }
                 }
             }
+        }
     }
 }
 
 @Composable
-fun LabelledText(label: String, value: String, modifier: Modifier = Modifier) {
+fun LabelledText(
+    label: String,
+    value: String,
+    modifier: Modifier = Modifier,
+) {
     Column(modifier.fillMaxWidth(0.5f)) {
         Text(text = label, fontSize = 14.sp)
         Text(text = value, fontSize = 16.sp)
@@ -182,14 +191,15 @@ fun Loader(modifier: Modifier = Modifier) {
 fun Error(
     modifier: Modifier = Modifier,
     errorHeading: String = stringResource(R.string.error_occurred),
-    errorMessage: String = stringResource(
-        R.string.please_try_again_later
-    )
+    errorMessage: String =
+        stringResource(
+            R.string.please_try_again_later,
+        ),
 ) {
     Column(
         modifier = modifier.fillMaxSize(),
         verticalArrangement = Arrangement.Center,
-        horizontalAlignment = CenterHorizontally
+        horizontalAlignment = CenterHorizontally,
     ) {
         Text(text = errorHeading, textAlign = TextAlign.Center, fontSize = 24.sp)
         Spacer(Modifier.padding(bottom = 8.dp))
@@ -203,6 +213,4 @@ fun Preview() {
     MaterialTheme {
         PokemonContent(pokemonList = PreviewData.pokemonList)
     }
-
-
 }

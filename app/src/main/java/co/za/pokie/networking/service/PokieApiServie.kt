@@ -8,10 +8,13 @@ import retrofit2.http.Query
 import retrofit2.http.Url
 
 interface PokieApiService {
-
     @GET("/api/v2/pokemon")
-    suspend fun getPokemonList(@Query("limit") limit: Int = 100): Response<PokemonResponseDto>
+    suspend fun getPokemonList(
+        @Query("limit") limit: Int = 100,
+    ): Response<PokemonResponseDto>
 
     @GET
-    suspend fun getResourceByUrl(@Url url: String?): Response<PokemonDetailsDto>
+    suspend fun getResourceByUrl(
+        @Url url: String?,
+    ): Response<PokemonDetailsDto>
 }

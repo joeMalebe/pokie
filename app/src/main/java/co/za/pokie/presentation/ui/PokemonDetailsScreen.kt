@@ -36,35 +36,38 @@ import co.za.pokie.R
 import co.za.pokie.domain.model.Pokemon
 import co.za.pokie.domain.viewmodel.HomeViewModel
 import co.za.pokie.presentation.theme.PokieAppTheme
-import co.za.pokie.presentation.ui.PreviewData
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 
 @Composable
-fun DetailsScreen(name: String, viewModel: HomeViewModel = hiltViewModel()) {
+fun DetailsScreen(
+    name: String,
+    viewModel: HomeViewModel = hiltViewModel(),
+) {
     viewModel.getPokemonDetails(name = name)?.let { DetailsContent(pokemon = it) }
 }
 
 @Composable
 fun DetailsContent(
     modifier: Modifier = Modifier,
-    pokemon: Pokemon = PreviewData.pokemonList.first()
+    pokemon: Pokemon = PreviewData.pokemonList.first(),
 ) {
-
     LazyColumn(
-        modifier = modifier
-            .fillMaxSize()
-            .padding(16.dp)
+        modifier =
+            modifier
+                .fillMaxSize()
+                .padding(16.dp),
     ) {
         item {
             Column(Modifier.fillMaxWidth(), horizontalAlignment = CenterHorizontally) {
                 AsyncImage(
                     contentScale = ContentScale.Crop,
                     modifier = Modifier.heightIn(320.dp, 640.dp),
-                    model = ImageRequest.Builder(LocalContext.current)
-                        .placeholder(R.drawable.ic_launcher_foreground).data(pokemon.image)
-                        .build(),
-                    contentDescription = pokemon.name
+                    model =
+                        ImageRequest.Builder(LocalContext.current)
+                            .placeholder(R.drawable.ic_launcher_foreground).data(pokemon.image)
+                            .build(),
+                    contentDescription = pokemon.name,
                 )
             }
         }
@@ -82,7 +85,10 @@ fun DetailsContent(
 }
 
 @Composable
-private fun Bio(pokemon: Pokemon, modifier: Modifier = Modifier) {
+private fun Bio(
+    pokemon: Pokemon,
+    modifier: Modifier = Modifier,
+) {
     Column(modifier, verticalArrangement = spacedBy(8.dp)) {
         Text("Hello ${pokemon.name}", fontSize = 24.sp)
         Row(horizontalArrangement = spacedBy(8.dp)) {
@@ -94,23 +100,29 @@ private fun Bio(pokemon: Pokemon, modifier: Modifier = Modifier) {
 }
 
 @Composable
-private fun BasicInfo(pokemon: Pokemon, modifier: Modifier = Modifier) {
+private fun BasicInfo(
+    pokemon: Pokemon,
+    modifier: Modifier = Modifier,
+) {
     Row(modifier.fillMaxWidth(), horizontalArrangement = spacedBy(8.dp)) {
         Vitals(
             label = stringResource(R.string.weight),
             value = "${pokemon.weight}kg",
-            modifier = Modifier.weight(0.2f, false)
+            modifier = Modifier.weight(0.2f, false),
         )
         Vitals(
             label = stringResource(R.string.height),
             value = "${pokemon.height}m",
-            modifier = Modifier.weight(0.2f, false)
+            modifier = Modifier.weight(0.2f, false),
         )
     }
 }
 
 @Composable
-private fun Stats(pokemon: Pokemon, modifier: Modifier = Modifier) {
+private fun Stats(
+    pokemon: Pokemon,
+    modifier: Modifier = Modifier,
+) {
     Column(modifier.fillMaxWidth(), verticalArrangement = spacedBy(8.dp)) {
         pokemon.stats.forEach {
             Text(text = it.name)
@@ -118,16 +130,21 @@ private fun Stats(pokemon: Pokemon, modifier: Modifier = Modifier) {
                 trackColor = MaterialTheme.colorScheme.onSecondary,
                 color = MaterialTheme.colorScheme.secondary,
                 strokeCap = StrokeCap.Square,
-                progress = { it.value }, modifier = modifier
-                    .fillMaxWidth()
-                    .height(12.dp)
+                progress = { it.value },
+                modifier =
+                    modifier
+                        .fillMaxWidth()
+                        .height(12.dp),
             )
         }
     }
 }
 
 @Composable
-private fun Abilities(pokemon: Pokemon, modifier: Modifier = Modifier) {
+private fun Abilities(
+    pokemon: Pokemon,
+    modifier: Modifier = Modifier,
+) {
     Column(modifier, verticalArrangement = spacedBy(8.dp)) {
         Text(stringResource(R.string.abilities), fontSize = 14.sp)
         Row(Modifier.fillMaxWidth(), horizontalArrangement = spacedBy(8.dp)) {
@@ -139,27 +156,37 @@ private fun Abilities(pokemon: Pokemon, modifier: Modifier = Modifier) {
 }
 
 @Composable
-fun PillTag(text: String, color: Color, modifier: Modifier = Modifier) {
+fun PillTag(
+    text: String,
+    color: Color,
+    modifier: Modifier = Modifier,
+) {
     Text(
         text = text,
         color = MaterialTheme.colorScheme.onPrimary,
-        modifier = modifier
-            .clip(RoundedCornerShape(50))
-            .background(color)
-            .padding(horizontal = 12.dp, vertical = 6.dp)
+        modifier =
+            modifier
+                .clip(RoundedCornerShape(50))
+                .background(color)
+                .padding(horizontal = 12.dp, vertical = 6.dp),
     )
 }
 
 @Composable
-private fun Vitals(value: String, modifier: Modifier = Modifier, label: String? = null) {
+private fun Vitals(
+    value: String,
+    modifier: Modifier = Modifier,
+    label: String? = null,
+) {
     Column(modifier.fillMaxWidth(), verticalArrangement = spacedBy(8.dp)) {
         label?.let { Text(it, fontSize = 14.sp) }
         Box(
-            contentAlignment = Center, modifier =
+            contentAlignment = Center,
+            modifier =
                 Modifier
                     .fillMaxWidth()
                     .border(width = 1.dp, color = MaterialTheme.colorScheme.primary)
-                    .padding(16.dp)
+                    .padding(16.dp),
         ) {
             Text(value, fontSize = 18.sp, maxLines = 1, overflow = Ellipsis)
         }
@@ -168,9 +195,8 @@ private fun Vitals(value: String, modifier: Modifier = Modifier, label: String? 
 
 @Composable
 @Preview(showSystemUi = true)
-fun DetailsContentPreview(
-) {
-    PokieAppTheme() {
+fun DetailsContentPreview() {
+    PokieAppTheme {
         DetailsContent(pokemon = PreviewData.pokemonList.first())
     }
 }

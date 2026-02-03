@@ -1,6 +1,7 @@
 package co.za.pokie.domain.model
 
 data class PokemonData(val name: String, val url: String)
+
 data class Pokemon(
     val name: String,
     val image: String,
@@ -21,9 +22,5 @@ data class HomeViewState(
     val isLoading: Boolean = false,
     val isDataLoaded: Boolean = false,
     val errorHeading: String? = null,
-    val errorDescription: String? = null
+    val errorDescription: String? = null,
 )
-
-
-
-

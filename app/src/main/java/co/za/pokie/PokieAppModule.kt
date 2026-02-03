@@ -1,8 +1,8 @@
 package co.za.pokie
 
+import co.za.pokie.networking.repository.PokieRepository
 import co.za.pokie.networking.service.PokieApiService
 import co.za.pokie.networking.service.PokieClient
-import co.za.pokie.networking.repository.PokieRepository
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -13,7 +13,6 @@ import okhttp3.logging.HttpLoggingInterceptor
 @Module
 @InstallIn(SingletonComponent::class)
 class PokieAppModule {
-
     @Provides
     fun pokieRepository(pokieService: PokieApiService): PokieRepository {
         return PokieRepository(pokieService)
@@ -24,7 +23,8 @@ class PokieAppModule {
         return OkHttpClient.Builder().addInterceptor(
             HttpLoggingInterceptor().apply {
                 level = HttpLoggingInterceptor.Level.BODY
-            }).build()
+            },
+        ).build()
     }
 
     @Provides

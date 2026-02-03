@@ -2,8 +2,8 @@ package co.za.pokie.repository
 
 import co.za.pokie.domain.model.Pokemon
 import co.za.pokie.domain.viewmodel.HomeViewModel
-import co.za.pokie.networking.service.PokieApiService
 import co.za.pokie.networking.repository.PokieRepository
+import co.za.pokie.networking.service.PokieApiService
 import co.za.pokie.networking.util.ApiResult
 import junit.framework.TestCase.assertEquals
 import kotlinx.coroutines.Dispatchers
@@ -42,19 +42,22 @@ class PokieRepositoryTest {
     fun setup() {
         mockRepository = mock<PokieRepository>()
 
-        val dispatcher = object : Dispatcher() {
-            override fun dispatch(request: RecordedRequest): MockResponse {
-                return when (request.requestUrl.toString()) {
-                    "http://localhost:${mockWebServer.port}/api/v2/pokemon?limit=100" -> MockResponse().setResponseCode(
-                        200
-                    )
-                        .setBody(loadJson("pokemonList.json"))
+        val dispatcher =
+            object : Dispatcher() {
+                override fun dispatch(request: RecordedRequest): MockResponse {
+                    return when (request.requestUrl.toString()) {
+                        "http://localhost:${mockWebServer.port}/api/v2/pokemon?limit=100" ->
+                            MockResponse().setResponseCode(
+                                200,
+                            )
+                                .setBody(loadJson("pokemonList.json"))
 
-                    else -> MockResponse().setResponseCode(200)
-                        .setBody(loadJson("pokemonDetail.json"))
+                        else ->
+                            MockResponse().setResponseCode(200)
+                                .setBody(loadJson("pokemonDetail.json"))
+                    }
                 }
             }
-        }
         mockWebServer.dispatcher = dispatcher
         mockWebServer.start()
 
@@ -62,9 +65,9 @@ class PokieRepositoryTest {
             Retrofit.Builder().client(
                 OkHttpClient().newBuilder().addInterceptor(
                     MockInterceptor(
-                        mockWebServer.url("/")
-                    )
-                ).build()
+                        mockWebServer.url("/"),
+                    ),
+                ).build(),
             )
                 .baseUrl(mockWebServer.url("/"))
                 .addConverterFactory(json.asConverterFactory("application/json".toMediaType()))
@@ -75,36 +78,39 @@ class PokieRepositoryTest {
     }
 
     @Test
-    fun `getPokemons should return pokemon data when successful`() = runTest {
-        val results = mutableListOf<ApiResult<List<Pokemon>>>()
+    fun `getPokemons should return pokemon data when successful`() =
+        runTest {
+            val results = mutableListOf<ApiResult<List<Pokemon>>>()
 
-        pokiecRepository.getPokemons().toList(results)
+            pokiecRepository.getPokemons().toList(results)
 
-        val data = (results.first() as ApiResult.Success).data
-        assertEquals(4, results.size)
-        assertNotNull(results)
-        assertEquals(20, data.size)
-    }
+            val data = (results.first() as ApiResult.Success).data
+            assertEquals(4, results.size)
+            assertNotNull(results)
+            assertEquals(20, data.size)
+        }
 
     @Test
-    fun `getPokemons should return error data when successful`() = runTest {
-        val server = MockWebServer()
-        val testClient = Retrofit.Builder()
-            .baseUrl(server.url("/"))
-            .addConverterFactory(json.asConverterFactory("application/json".toMediaType()))
-            .build()
-            .create(PokieApiService::class.java)
-        val results = mutableListOf<ApiResult<List<Pokemon>>>()
-        val repository = PokieRepository(testClient, Dispatchers.Unconfined)
-        val response = MockResponse().setResponseCode(404)
-        server.enqueue(response)
+    fun `getPokemons should return error data when successful`() =
+        runTest {
+            val server = MockWebServer()
+            val testClient =
+                Retrofit.Builder()
+                    .baseUrl(server.url("/"))
+                    .addConverterFactory(json.asConverterFactory("application/json".toMediaType()))
+                    .build()
+                    .create(PokieApiService::class.java)
+            val results = mutableListOf<ApiResult<List<Pokemon>>>()
+            val repository = PokieRepository(testClient, Dispatchers.Unconfined)
+            val response = MockResponse().setResponseCode(404)
+            server.enqueue(response)
 
-        repository.getPokemons().toList(results)
-        server.takeRequest()
+            repository.getPokemons().toList(results)
+            server.takeRequest()
 
-        val data = (results.first() as ApiResult.Error)
-        assertEquals("Client Error", data.message)
-    }
+            val data = (results.first() as ApiResult.Error)
+            assertEquals("Client Error", data.message)
+        }
 
     fun loadJson(name: String): String {
         return this::class.java.classLoader!!
@@ -119,11 +125,12 @@ class MockInterceptor(private val mockServerUrl: HttpUrl) : Interceptor {
         val url = request.url
 
         if (url.host == "pokeapi.co") {
-            val newUrl = url.newBuilder()
-                .scheme(mockServerUrl.scheme)
-                .host(mockServerUrl.host)
-                .port(mockServerUrl.port)
-                .build()
+            val newUrl =
+                url.newBuilder()
+                    .scheme(mockServerUrl.scheme)
+                    .host(mockServerUrl.host)
+                    .port(mockServerUrl.port)
+                    .build()
 
             request = request.newBuilder().url(newUrl).build()
         }

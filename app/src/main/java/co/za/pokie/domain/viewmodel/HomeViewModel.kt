@@ -16,62 +16,67 @@ import javax.inject.Inject
 import kotlin.coroutines.CoroutineContext
 
 @HiltViewModel
-class HomeViewModel @Inject constructor(
-    private val pokieRepository: PokieRepository,
-) : ViewModel() {
+class HomeViewModel
+    @Inject
+    constructor(
+        private val pokieRepository: PokieRepository,
+    ) : ViewModel() {
+        private val _homeViewData = MutableStateFlow(HomeViewState(isLoading = true))
+        val homeViewState = _homeViewData.asStateFlow()
 
-    private val _homeViewData = MutableStateFlow(HomeViewState(isLoading = true))
-    val homeViewState = _homeViewData.asStateFlow()
-
-    fun loadPokemons(coroutineContext: CoroutineContext = Dispatchers.IO) {
-        viewModelScope.launch(coroutineContext) {
-            if (_homeViewData.value.isDataLoaded) return@launch
-            pokieRepository.getPokemons().collect { result ->
-                when (result) {
-                    is ApiResult.Success -> {
-                        _homeViewData.update { currentState ->
-                            currentState.copy(
-                                isLoading = false,
-                                isDataLoaded = true,
-                                pokemonList = (currentState.pokemonList + result.data).distinctBy { it.name })
+        fun loadPokemons(coroutineContext: CoroutineContext = Dispatchers.IO) {
+            viewModelScope.launch(coroutineContext) {
+                if (_homeViewData.value.isDataLoaded) return@launch
+                pokieRepository.getPokemons().collect { result ->
+                    when (result) {
+                        is ApiResult.Success -> {
+                            _homeViewData.update { currentState ->
+                                currentState.copy(
+                                    isLoading = false,
+                                    isDataLoaded = true,
+                                    pokemonList = (currentState.pokemonList + result.data).distinctBy { it.name },
+                                )
+                            }
                         }
-                    }
 
-                    is ApiResult.Error -> {
-                        _homeViewData.update { currentState ->
-                            currentState.copy(
-                                isLoading = false,
-                                isDataLoaded = true,
-                                errorDescription = result.message
-                            )
+                        is ApiResult.Error -> {
+                            _homeViewData.update { currentState ->
+                                currentState.copy(
+                                    isLoading = false,
+                                    isDataLoaded = true,
+                                    errorDescription = result.message,
+                                )
+                            }
                         }
-                    }
 
-                    is ApiResult.NoInternetError -> {
-                        _homeViewData.update { currentState ->
-                            currentState.copy(
-                                isLoading = false,
-                                isDataLoaded = true,
-                                errorDescription = result.message
-                            )
+                        is ApiResult.NoInternetError -> {
+                            _homeViewData.update { currentState ->
+                                currentState.copy(
+                                    isLoading = false,
+                                    isDataLoaded = true,
+                                    errorDescription = result.message,
+                                )
+                            }
                         }
                     }
                 }
             }
         }
-    }
 
-    fun getPokemonDetails(name: String): Pokemon? =
-        this._homeViewData.value.pokemonList.firstOrNull { it.name == name }
+        fun getPokemonDetails(name: String): Pokemon? = this._homeViewData.value.pokemonList.firstOrNull { it.name == name }
 
-    fun filterList(search: String) {
-        _homeViewData.update {
-            it.copy(searchQuery = search, filteredList = it.pokemonList.filter { pokemon ->
-                pokemon.name.contains(
-                    search,
-                    ignoreCase = true
+        fun filterList(search: String) {
+            _homeViewData.update {
+                it.copy(
+                    searchQuery = search,
+                    filteredList =
+                        it.pokemonList.filter { pokemon ->
+                            pokemon.name.contains(
+                                search,
+                                ignoreCase = true,
+                            )
+                        },
                 )
-            })
+            }
         }
     }
-}

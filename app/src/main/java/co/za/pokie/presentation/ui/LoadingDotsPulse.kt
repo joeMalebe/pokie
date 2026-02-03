@@ -34,32 +34,35 @@ fun LoadingDotsPulse(
     Row(
         modifier = modifier,
         horizontalArrangement = Arrangement.spacedBy(8.dp),
-        verticalAlignment = Alignment.CenterVertically
+        verticalAlignment = Alignment.CenterVertically,
     ) {
         repeat(3) { index ->
             val scale by transition.animateFloat(
                 initialValue = 0.8f,
                 targetValue = 1.2f,
-                animationSpec = infiniteRepeatable(
-                    animation = tween(
-                        durationMillis = 600,
-                        delayMillis = index * 200,
-                        easing = FastOutSlowInEasing
+                animationSpec =
+                    infiniteRepeatable(
+                        animation =
+                            tween(
+                                durationMillis = 600,
+                                delayMillis = index * 200,
+                                easing = FastOutSlowInEasing,
+                            ),
+                        repeatMode = RepeatMode.Reverse,
                     ),
-                    repeatMode = RepeatMode.Reverse
-                ),
-                label = "dotScale"
+                label = "dotScale",
             )
 
             Box(
-                modifier = Modifier
-                    .size(dotSize)
-                    .graphicsLayer(
-                        scaleX = scale,
-                        scaleY = scale
-                    )
-                    .clip(CircleShape)
-                    .background(dotColor)
+                modifier =
+                    Modifier
+                        .size(dotSize)
+                        .graphicsLayer(
+                            scaleX = scale,
+                            scaleY = scale,
+                        )
+                        .clip(CircleShape)
+                        .background(dotColor),
             )
         }
     }

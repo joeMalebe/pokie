@@ -1,7 +1,7 @@
 package co.za.pokie.networking.dto
 
-import kotlinx.serialization.Serializable
 import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
 
 @Serializable
 data class PokemonResponseDto(
@@ -12,7 +12,7 @@ data class PokemonResponseDto(
     @SerialName("previous")
     val previous: String? = null,
     @SerialName("results")
-    val results: List<ResultDto> = listOf()
+    val results: List<ResultDto> = listOf(),
 )
 
 @Serializable
@@ -20,7 +20,5 @@ data class ResultDto(
     @SerialName("name")
     val name: String = "",
     @SerialName("url")
-    val url: String = ""
+    val url: String = "",
 )
-
-

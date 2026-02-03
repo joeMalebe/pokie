@@ -5,7 +5,9 @@ import java.net.ConnectException
 
 sealed class ApiResult<out T> {
     data class Success<T>(val data: T) : ApiResult<T>()
+
     data class Error(val message: String? = null) : ApiResult<Nothing>()
+
     data class NoInternetError(val message: String? = null) : ApiResult<Nothing>()
 }
 

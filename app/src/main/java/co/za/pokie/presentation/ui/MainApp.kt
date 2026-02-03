@@ -16,10 +16,11 @@ import co.za.pokie.presentation.navigation.PokieNavHost
 fun PokieApp() {
     Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
         Box(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(16.dp)
-                .padding(innerPadding)
+            modifier =
+                Modifier
+                    .fillMaxWidth()
+                    .padding(16.dp)
+                    .padding(innerPadding),
         ) {
             PokieNavHost()
         }

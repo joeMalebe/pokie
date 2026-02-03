@@ -11,64 +11,57 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 
-private val DarkColorScheme = darkColorScheme(
-    primary = CyanPrimary,
-    onPrimary = Color.Black,
+private val DarkColorScheme =
+    darkColorScheme(
+        primary = CyanPrimary,
+        onPrimary = Color.Black,
+        secondary = CyanSecondary,
+        onSecondary = Color.Black,
+        tertiary = CyanTertiary,
+        onTertiary = Color.Black,
+        background = DarkBackground,
+        onBackground = TextDarkPrimary,
+        surface = DarkSurface,
+        onSurface = TextDarkPrimary,
+        outline = OutlineColor,
+    )
 
-    secondary = CyanSecondary,
-    onSecondary = Color.Black,
-
-    tertiary = CyanTertiary,
-    onTertiary = Color.Black,
-
-    background = DarkBackground,
-    onBackground = TextDarkPrimary,
-
-    surface = DarkSurface,
-    onSurface = TextDarkPrimary,
-
-    outline = OutlineColor,
-)
-
-private val LightColorScheme = lightColorScheme(
-    primary = CyanTertiary,
-    onPrimary = Color.Black,
-
-    secondary = CyanPrimary,
-    onSecondary = Color.Black,
-
-    tertiary = CyanSecondary,
-    onTertiary = Color.Black,
-
-    background = LightBackground,
-    onBackground = TextLightPrimary,
-
-    surface = LightSurface,
-    onSurface = TextLightPrimary,
-
-    outline = OutlineColor,
-)
+private val LightColorScheme =
+    lightColorScheme(
+        primary = CyanTertiary,
+        onPrimary = Color.Black,
+        secondary = CyanPrimary,
+        onSecondary = Color.Black,
+        tertiary = CyanSecondary,
+        onTertiary = Color.Black,
+        background = LightBackground,
+        onBackground = TextLightPrimary,
+        surface = LightSurface,
+        onSurface = TextLightPrimary,
+        outline = OutlineColor,
+    )
 
 @Composable
 fun PokieAppTheme(
     darkTheme: Boolean = isSystemInDarkTheme(),
     // Dynamic color is available on Android 12+
     dynamicColor: Boolean = true,
-    content: @Composable () -> Unit
+    content: @Composable () -> Unit,
 ) {
-    val colorScheme = when {
-        dynamicColor && Build.VERSION.SDK_INT >= Build.VERSION_CODES.S -> {
-            val context = LocalContext.current
-            if (darkTheme) dynamicDarkColorScheme(context) else dynamicLightColorScheme(context)
-        }
+    val colorScheme =
+        when {
+            dynamicColor && Build.VERSION.SDK_INT >= Build.VERSION_CODES.S -> {
+                val context = LocalContext.current
+                if (darkTheme) dynamicDarkColorScheme(context) else dynamicLightColorScheme(context)
+            }
 
-        darkTheme -> DarkColorScheme
-        else -> LightColorScheme
-    }
+            darkTheme -> DarkColorScheme
+            else -> LightColorScheme
+        }
 
     MaterialTheme(
         colorScheme = colorScheme,
         typography = Typography,
-        content = content
+        content = content,
     )
 }

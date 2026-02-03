@@ -28,7 +28,7 @@ class MapperTest {
         assertEquals("caterpie", result.name)
         assertEquals(
             "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/10.png",
-            result.image
+            result.image,
         )
         assertEquals("shield-dust", result.abilities.first())
         assertEquals("bug", result.type.first())
