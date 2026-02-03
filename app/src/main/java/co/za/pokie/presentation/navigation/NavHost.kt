@@ -1,4 +1,4 @@
-package co.za.pokie.ui.navigation
+package co.za.pokie.presentation.navigation
 
 import androidx.compose.runtime.Composable
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
@@ -8,8 +8,8 @@ import androidx.navigation3.runtime.rememberNavBackStack
 import androidx.navigation3.runtime.rememberSaveableStateHolderNavEntryDecorator
 import androidx.navigation3.ui.NavDisplay
 import co.za.pokie.domain.viewmodel.HomeViewModel
-import co.za.pokie.ui.components.DetailsScreen
-import co.za.pokie.ui.components.HomeScreen
+import co.za.pokie.presentation.ui.DetailsScreen
+import co.za.pokie.presentation.ui.HomeScreen
 
 @Composable
 fun PokieNavHost() {

@@ -1,7 +1,7 @@
 package co.za.pokie.networking.repository
 
+import co.za.pokie.domain.model.PokemonData
 import co.za.pokie.domain.model.Pokemon
-import co.za.pokie.domain.model.Pokemon1
 import co.za.pokie.networking.PokieApiService
 import co.za.pokie.networking.util.mapToPokemon
 import co.za.pokie.networking.util.ApiResult
@@ -17,7 +17,7 @@ class PokieRepository @Inject constructor(
     private val client: PokieApiService,
     private val dispatcher: CoroutineDispatcher = ioDispatcher()
 ) {
-    suspend fun getPokemonList(): ApiResult<List<Pokemon>> {
+    suspend fun getPokemonList(): ApiResult<List<PokemonData>> {
         return withContext(dispatcher) {
             val response = callApiClient {
                 client.getPokemonList()
@@ -40,7 +40,7 @@ class PokieRepository @Inject constructor(
         }
     }
 
-    suspend fun getPokemonDetail(url: String): ApiResult<Pokemon1> {
+    suspend fun getPokemonDetail(url: String): ApiResult<Pokemon> {
         return withContext(dispatcher) {
             val response = callApiClient {
                 client.getResourceByUrl(url)
@@ -62,11 +62,11 @@ class PokieRepository @Inject constructor(
         }
     }
 
-    fun getPokemons(): Flow<ApiResult<List<Pokemon1>>> {
+    fun getPokemons(): Flow<ApiResult<List<Pokemon>>> {
         return flow {
             when (val pokemonList = getPokemonList()) {
                 is ApiResult.Success -> {
-                    val pokemonDetailsList = mutableListOf<Pokemon1>()
+                    val pokemonDetailsList = mutableListOf<Pokemon>()
                     pokemonList.data.forEach {
                         val pokemonDetail = getPokemonDetail(it.url)
                         if (pokemonDetail is ApiResult.Success) {

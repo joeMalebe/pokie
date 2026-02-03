@@ -1,4 +1,4 @@
-package co.za.pokie.ui.components
+package co.za.pokie.presentation.ui
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -31,14 +31,14 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import co.za.pokie.R
-import co.za.pokie.domain.model.Pokemon1
+import co.za.pokie.domain.model.Pokemon
 import co.za.pokie.domain.viewmodel.HomeViewModel
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 
 @Composable
 fun DetailsScreen(name: String, viewModel: HomeViewModel = hiltViewModel()) {
-    viewModel.getPokemonDetails(name = name)?.let { DetailsContent(pokemon1 = it) }
+    viewModel.getPokemonDetails(name = name)?.let { DetailsContent(pokemon = it) }
 }
 
 
@@ -46,7 +46,7 @@ fun DetailsScreen(name: String, viewModel: HomeViewModel = hiltViewModel()) {
 @Preview(showSystemUi = true)
 fun DetailsContent(
     modifier: Modifier = Modifier,
-    pokemon1: Pokemon1 = PreviewData.pokemonList.first()
+    pokemon: Pokemon = PreviewData.pokemonList.first()
 ) {
 
     LazyColumn(
@@ -61,30 +61,30 @@ fun DetailsContent(
                     contentScale = ContentScale.Crop,
                     modifier = Modifier.heightIn(320.dp, 640.dp),
                     model = ImageRequest.Builder(LocalContext.current)
-                        .placeholder(R.drawable.ic_launcher_foreground).data(pokemon1.image)
+                        .placeholder(R.drawable.ic_launcher_foreground).data(pokemon.image)
                         .build(),
-                    contentDescription = pokemon1.name
+                    contentDescription = pokemon.name
                 )
             }
         }
 
         item {
             Column(Modifier.fillMaxWidth(), verticalArrangement = spacedBy(16.dp)) {
-                Bio(pokemon1)
-                BasicInfo(pokemon1)
-                Abilities(pokemon1)
-                Stats(pokemon1, Modifier.fillMaxWidth())
+                Bio(pokemon)
+                BasicInfo(pokemon)
+                Abilities(pokemon)
+                Stats(pokemon, Modifier.fillMaxWidth())
             }
         }
     }
 }
 
 @Composable
-private fun Bio(pokemon1: Pokemon1, modifier: Modifier = Modifier) {
+private fun Bio(pokemon: Pokemon, modifier: Modifier = Modifier) {
     Column(modifier, verticalArrangement = spacedBy(8.dp)) {
-        Text("Hello ${pokemon1.name}", fontSize = 24.sp)
+        Text("Hello ${pokemon.name}", fontSize = 24.sp)
         Row(horizontalArrangement = spacedBy(8.dp)) {
-            pokemon1.type.forEach {
+            pokemon.type.forEach {
                 PillTag(it, MaterialTheme.colorScheme.primary)
             }
         }
@@ -92,25 +92,25 @@ private fun Bio(pokemon1: Pokemon1, modifier: Modifier = Modifier) {
 }
 
 @Composable
-private fun BasicInfo(pokemon1: Pokemon1, modifier: Modifier = Modifier) {
+private fun BasicInfo(pokemon: Pokemon, modifier: Modifier = Modifier) {
     Row(modifier.fillMaxWidth(), horizontalArrangement = spacedBy(8.dp)) {
         Vitals(
             label = stringResource(R.string.weight),
-            value = "${pokemon1.weight}kg",
+            value = "${pokemon.weight}kg",
             modifier = Modifier.weight(0.2f, false)
         )
         Vitals(
             label = stringResource(R.string.height),
-            value = "${pokemon1.height}m",
+            value = "${pokemon.height}m",
             modifier = Modifier.weight(0.2f, false)
         )
     }
 }
 
 @Composable
-private fun Stats(pokemon1: Pokemon1, modifier: Modifier = Modifier) {
+private fun Stats(pokemon: Pokemon, modifier: Modifier = Modifier) {
     Column(modifier.fillMaxWidth(), verticalArrangement = spacedBy(8.dp)) {
-        pokemon1.stats.forEach {
+        pokemon.stats.forEach {
             Text(text = it.name)
             LinearProgressIndicator(
                 trackColor = MaterialTheme.colorScheme.onSecondary,
@@ -125,11 +125,11 @@ private fun Stats(pokemon1: Pokemon1, modifier: Modifier = Modifier) {
 }
 
 @Composable
-private fun Abilities(pokemon1: Pokemon1, modifier: Modifier = Modifier) {
+private fun Abilities(pokemon: Pokemon, modifier: Modifier = Modifier) {
     Column(modifier, verticalArrangement = spacedBy(8.dp)) {
         Text(stringResource(R.string.abilities), fontSize = 16.sp)
         Row(Modifier.fillMaxWidth(), horizontalArrangement = spacedBy(8.dp)) {
-            pokemon1.abilities.forEach {
+            pokemon.abilities.forEach {
                 Vitals(value = it, Modifier.weight(0.3f))
             }
         }

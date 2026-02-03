@@ -3,7 +3,7 @@ package co.za.pokie.domain.viewmodel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import co.za.pokie.domain.model.HomeViewState
-import co.za.pokie.domain.model.Pokemon1
+import co.za.pokie.domain.model.Pokemon
 import co.za.pokie.networking.repository.PokieRepository
 import co.za.pokie.networking.util.ApiResult
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -42,7 +42,7 @@ class HomeViewModel @Inject constructor(
         }
     }
 
-    fun getPokemonDetails(name: String): Pokemon1? =
+    fun getPokemonDetails(name: String): Pokemon? =
         this._homeViewData.value.pokemonList.firstOrNull { it.name == name }
 
 

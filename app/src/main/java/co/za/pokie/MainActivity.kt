@@ -6,8 +6,8 @@ import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import co.za.pokie.networking.PokieApiService
 import co.za.pokie.networking.repository.PokieRepository
-import co.za.pokie.ui.components.PokieApp
-import co.za.pokie.ui.theme.PokieAppTheme
+import co.za.pokie.presentation.ui.PokieApp
+import co.za.pokie.presentation.theme.PokieAppTheme
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 

@@ -1,4 +1,4 @@
-package co.za.pokie.ui.theme
+package co.za.pokie.presentation.theme
 
 import androidx.compose.ui.graphics.Color
 

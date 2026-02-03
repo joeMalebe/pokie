@@ -1,4 +1,4 @@
-package co.za.pokie.ui.navigation
+package co.za.pokie.presentation.navigation
 
 import androidx.navigation3.runtime.NavKey
 import kotlinx.serialization.Serializable
