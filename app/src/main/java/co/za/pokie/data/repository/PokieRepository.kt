@@ -2,7 +2,7 @@ package co.za.pokie.data.repository
 
 import co.za.pokie.domain.model.Pokemon
 import co.za.pokie.domain.model.PokemonData
-import co.za.pokie.data.service.PokieApiService
+import co.za.pokie.data.network.PokieApiService
 import co.za.pokie.data.util.ApiResult
 import co.za.pokie.data.util.callApiClient
 import co.za.pokie.data.util.mapToPokemon
@@ -17,7 +17,7 @@ interface PokieRepository {
     fun getPokemons(): Flow<ApiResult<List<Pokemon>>>
 }
 
-class PokieRepositoryImpl
+internal class PokieRepositoryImpl
     @Inject
     constructor(
         private val client: PokieApiService,

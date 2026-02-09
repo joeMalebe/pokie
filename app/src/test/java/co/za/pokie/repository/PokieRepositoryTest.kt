@@ -4,7 +4,7 @@ import co.za.pokie.data.repository.PokieRepository
 import co.za.pokie.domain.model.Pokemon
 import co.za.pokie.domain.viewmodel.HomeViewModel
 import co.za.pokie.data.repository.PokieRepositoryImpl
-import co.za.pokie.data.service.PokieApiService
+import co.za.pokie.data.network.PokieApiService
 import co.za.pokie.data.util.ApiResult
 import junit.framework.TestCase.assertEquals
 import kotlinx.coroutines.Dispatchers

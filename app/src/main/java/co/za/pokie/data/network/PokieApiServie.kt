@@ -1,4 +1,4 @@
-package co.za.pokie.data.service
+package co.za.pokie.data.network
 
 import co.za.pokie.data.dto.PokemonDetailsDto
 import co.za.pokie.data.dto.PokemonResponseDto
