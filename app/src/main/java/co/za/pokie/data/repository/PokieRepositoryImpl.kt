@@ -13,13 +13,17 @@ import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
-class PokieRepository
+interface PokieRepository {
+    fun getPokemons(): Flow<ApiResult<List<Pokemon>>>
+}
+
+class PokieRepositoryImpl
     @Inject
     constructor(
         private val client: PokieApiService,
         private val dispatcher: CoroutineDispatcher = ioDispatcher(),
-    ) {
-        fun getPokemons(): Flow<ApiResult<List<Pokemon>>> =
+    ): PokieRepository {
+       override fun getPokemons(): Flow<ApiResult<List<Pokemon>>> =
             flow {
                 when (val pokemonList = getPokemonList()) {
                     is ApiResult.Success -> {

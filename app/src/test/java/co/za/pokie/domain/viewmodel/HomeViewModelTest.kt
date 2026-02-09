@@ -1,7 +1,8 @@
 package co.za.pokie.domain.viewmodel
 
-import co.za.pokie.domain.model.HomeViewState
 import co.za.pokie.data.repository.PokieRepository
+import co.za.pokie.domain.model.HomeViewState
+import co.za.pokie.data.repository.PokieRepositoryImpl
 import co.za.pokie.data.util.ApiResult
 import co.za.pokie.presentation.ui.PreviewData
 import junit.framework.TestCase.assertEquals

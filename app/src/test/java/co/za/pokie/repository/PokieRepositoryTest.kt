@@ -1,8 +1,9 @@
 package co.za.pokie.repository
 
+import co.za.pokie.data.repository.PokieRepository
 import co.za.pokie.domain.model.Pokemon
 import co.za.pokie.domain.viewmodel.HomeViewModel
-import co.za.pokie.data.repository.PokieRepository
+import co.za.pokie.data.repository.PokieRepositoryImpl
 import co.za.pokie.data.service.PokieApiService
 import co.za.pokie.data.util.ApiResult
 import junit.framework.TestCase.assertEquals
@@ -22,25 +23,19 @@ import okhttp3.mockwebserver.RecordedRequest
 import org.junit.Assert.assertNotNull
 import org.junit.Before
 import org.junit.Test
-import org.mockito.Mock
-import org.mockito.Mockito.mock
 import retrofit2.Retrofit
 import retrofit2.converter.kotlinx.serialization.asConverterFactory
 
 class PokieRepositoryTest {
     private lateinit var client: PokieApiService
     val mockWebServer = MockWebServer()
-    lateinit var pokiecRepository: PokieRepository
-
-    @Mock
-    lateinit var mockRepository: PokieRepository
+    lateinit var pokieRepository: PokieRepository
 
     lateinit var viewModel: HomeViewModel
     val json = Json { ignoreUnknownKeys = true }
 
     @Before
     fun setup() {
-        mockRepository = mock<PokieRepository>()
 
         val dispatcher =
             object : Dispatcher() {
@@ -73,8 +68,8 @@ class PokieRepositoryTest {
                 .addConverterFactory(json.asConverterFactory("application/json".toMediaType()))
                 .build()
                 .create(PokieApiService::class.java)
-        pokiecRepository = PokieRepository(client, Dispatchers.Unconfined)
-        viewModel = HomeViewModel(pokiecRepository)
+        pokieRepository = PokieRepositoryImpl(client, Dispatchers.Unconfined)
+        viewModel = HomeViewModel(pokieRepository)
     }
 
     @Test
@@ -82,7 +77,7 @@ class PokieRepositoryTest {
         runTest {
             val results = mutableListOf<ApiResult<List<Pokemon>>>()
 
-            pokiecRepository.getPokemons().toList(results)
+            pokieRepository.getPokemons().toList(results)
 
             val data = (results.first() as ApiResult.Success).data
             assertEquals(4, results.size)
@@ -101,7 +96,7 @@ class PokieRepositoryTest {
                     .build()
                     .create(PokieApiService::class.java)
             val results = mutableListOf<ApiResult<List<Pokemon>>>()
-            val repository = PokieRepository(testClient, Dispatchers.Unconfined)
+            val repository = PokieRepositoryImpl(testClient, Dispatchers.Unconfined)
             val response = MockResponse().setResponseCode(404)
             server.enqueue(response)
 

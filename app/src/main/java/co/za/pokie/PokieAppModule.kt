@@ -1,6 +1,7 @@
 package co.za.pokie
 
 import co.za.pokie.data.repository.PokieRepository
+import co.za.pokie.data.repository.PokieRepositoryImpl
 import co.za.pokie.data.service.PokieApiService
 import co.za.pokie.data.service.PokieClient
 import dagger.Module
@@ -15,7 +16,7 @@ import okhttp3.logging.HttpLoggingInterceptor
 class PokieAppModule {
     @Provides
     fun pokieRepository(pokieService: PokieApiService): PokieRepository {
-        return PokieRepository(pokieService)
+        return PokieRepositoryImpl(pokieService)
     }
 
     @Provides
