@@ -1,7 +1,7 @@
-package co.za.pokie.networking.service
+package co.za.pokie.data.service
 
-import co.za.pokie.networking.dto.PokemonDetailsDto
-import co.za.pokie.networking.dto.PokemonResponseDto
+import co.za.pokie.data.dto.PokemonDetailsDto
+import co.za.pokie.data.dto.PokemonResponseDto
 import retrofit2.Response
 import retrofit2.http.GET
 import retrofit2.http.Query

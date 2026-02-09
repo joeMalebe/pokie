@@ -1,11 +1,11 @@
-package co.za.pokie.networking.repository
+package co.za.pokie.data.repository
 
 import co.za.pokie.domain.model.Pokemon
 import co.za.pokie.domain.model.PokemonData
-import co.za.pokie.networking.service.PokieApiService
-import co.za.pokie.networking.util.ApiResult
-import co.za.pokie.networking.util.callApiClient
-import co.za.pokie.networking.util.mapToPokemon
+import co.za.pokie.data.service.PokieApiService
+import co.za.pokie.data.util.ApiResult
+import co.za.pokie.data.util.callApiClient
+import co.za.pokie.data.util.mapToPokemon
 import io.ktor.utils.io.ioDispatcher
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.Flow

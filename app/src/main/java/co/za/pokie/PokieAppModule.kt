@@ -1,8 +1,8 @@
 package co.za.pokie
 
-import co.za.pokie.networking.repository.PokieRepository
-import co.za.pokie.networking.service.PokieApiService
-import co.za.pokie.networking.service.PokieClient
+import co.za.pokie.data.repository.PokieRepository
+import co.za.pokie.data.service.PokieApiService
+import co.za.pokie.data.service.PokieClient
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn

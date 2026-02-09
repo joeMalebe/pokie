@@ -1,10 +1,10 @@
-package co.za.pokie.networking.util
+package co.za.pokie.data.util
 
 import co.za.pokie.domain.model.Pokemon
 import co.za.pokie.domain.model.PokemonData
 import co.za.pokie.domain.model.Stat
-import co.za.pokie.networking.dto.PokemonDetailsDto
-import co.za.pokie.networking.dto.PokemonResponseDto
+import co.za.pokie.data.dto.PokemonDetailsDto
+import co.za.pokie.data.dto.PokemonResponseDto
 
 private const val MAX_BASE_SCORE = 255
 

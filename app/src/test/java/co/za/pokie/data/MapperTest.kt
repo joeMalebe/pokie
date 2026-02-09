@@ -1,7 +1,7 @@
-package co.za.pokie.networking
+package co.za.pokie.data
 
-import co.za.pokie.networking.dto.PokemonDetailsDto
-import co.za.pokie.networking.util.mapToPokemon
+import co.za.pokie.data.dto.PokemonDetailsDto
+import co.za.pokie.data.util.mapToPokemon
 import kotlinx.serialization.json.Json
 import org.junit.Assert.assertEquals
 import org.junit.Test

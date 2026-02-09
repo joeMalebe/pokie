@@ -1,4 +1,4 @@
-package co.za.pokie.networking.service
+package co.za.pokie.data.service
 
 import kotlinx.serialization.json.Json
 import okhttp3.MediaType.Companion.toMediaType

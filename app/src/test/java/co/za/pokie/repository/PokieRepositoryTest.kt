@@ -2,9 +2,9 @@ package co.za.pokie.repository
 
 import co.za.pokie.domain.model.Pokemon
 import co.za.pokie.domain.viewmodel.HomeViewModel
-import co.za.pokie.networking.repository.PokieRepository
-import co.za.pokie.networking.service.PokieApiService
-import co.za.pokie.networking.util.ApiResult
+import co.za.pokie.data.repository.PokieRepository
+import co.za.pokie.data.service.PokieApiService
+import co.za.pokie.data.util.ApiResult
 import junit.framework.TestCase.assertEquals
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.toList

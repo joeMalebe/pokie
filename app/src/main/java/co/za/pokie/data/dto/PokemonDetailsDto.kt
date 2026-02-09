@@ -1,4 +1,4 @@
-package co.za.pokie.networking.dto
+package co.za.pokie.data.dto
 
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable

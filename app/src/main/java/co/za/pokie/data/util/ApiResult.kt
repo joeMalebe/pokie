@@ -1,4 +1,4 @@
-package co.za.pokie.networking.util
+package co.za.pokie.data.util
 
 import retrofit2.Response
 import java.net.ConnectException
