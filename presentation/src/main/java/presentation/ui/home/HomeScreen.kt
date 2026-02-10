@@ -1,4 +1,4 @@
-package co.za.pokie.presentation.ui
+package co.za.pokie.presentation.ui.home
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -21,9 +21,6 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment.Companion.Center
 import androidx.compose.ui.Alignment.Companion.CenterHorizontally
 import androidx.compose.ui.Modifier
@@ -39,6 +36,7 @@ import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import co.za.pokie.domain.model.Pokemon
 import co.za.pokie.presentation.R
+import co.za.pokie.presentation.ui.PreviewData
 import co.za.pokie.presentation.viewmodel.HomeViewModel
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
@@ -54,10 +52,6 @@ fun HomeScreen(
         viewModel.loadPokemons()
     }
     val errorMessage = viewState.errorDescription
-
-    var query by rememberSaveable { mutableStateOf("") }
-    var active by rememberSaveable { mutableStateOf(false) }
-    val allItems = listOf("Android", "Kotlin", "Compose", "Material", "Jetpack")
 
     Column(modifier) {
         when {

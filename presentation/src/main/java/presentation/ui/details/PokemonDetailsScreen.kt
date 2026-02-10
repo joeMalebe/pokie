@@ -1,4 +1,4 @@
-package co.za.pokie.presentation.ui
+package co.za.pokie.presentation.ui.details
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -35,6 +35,7 @@ import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import co.za.pokie.domain.model.Pokemon
 import co.za.pokie.presentation.R
 import co.za.pokie.presentation.theme.PokieAppTheme
+import co.za.pokie.presentation.ui.PreviewData
 import co.za.pokie.presentation.viewmodel.HomeViewModel
 import coil.compose.AsyncImage
 import coil.request.ImageRequest

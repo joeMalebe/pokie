@@ -1,4 +1,4 @@
-package co.za.pokie.presentation.ui
+package co.za.pokie.presentation.ui.home
 
 import androidx.compose.animation.core.FastOutSlowInEasing
 import androidx.compose.animation.core.RepeatMode

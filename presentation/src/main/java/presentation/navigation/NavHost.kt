@@ -7,8 +7,8 @@ import androidx.navigation3.runtime.NavEntry
 import androidx.navigation3.runtime.rememberNavBackStack
 import androidx.navigation3.runtime.rememberSaveableStateHolderNavEntryDecorator
 import androidx.navigation3.ui.NavDisplay
-import co.za.pokie.presentation.ui.DetailsScreen
-import co.za.pokie.presentation.ui.HomeScreen
+import co.za.pokie.presentation.ui.details.DetailsScreen
+import co.za.pokie.presentation.ui.home.HomeScreen
 import co.za.pokie.presentation.viewmodel.HomeViewModel
 
 @Composable
