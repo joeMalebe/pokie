@@ -2,7 +2,7 @@ package co.za.pokie.data.repository
 
 import co.za.pokie.data.network.PokieApiService
 import co.za.pokie.domain.model.Pokemon
-import co.za.pokie.domain.viewmodel.HomeViewModel
+import co.za.pokie.domain.model.PokieRepository
 import junit.framework.TestCase.assertEquals
 import junit.framework.TestCase.fail
 import kotlinx.coroutines.Dispatchers
@@ -29,7 +29,6 @@ class PokieRepositoryTest {
     val mockWebServer = MockWebServer()
     lateinit var pokieRepository: PokieRepository
 
-    lateinit var viewModel: HomeViewModel
     val json = Json { ignoreUnknownKeys = true }
 
     @Before
@@ -68,7 +67,6 @@ class PokieRepositoryTest {
                 .build()
                 .create(PokieApiService::class.java)
         pokieRepository = PokieRepositoryImpl(client, Dispatchers.Unconfined)
-        viewModel = HomeViewModel(pokieRepository)
     }
 
     @Test
