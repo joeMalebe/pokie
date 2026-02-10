@@ -10,17 +10,22 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.lazy.staggeredgrid.LazyStaggeredGridState
 import androidx.compose.foundation.lazy.staggeredgrid.LazyVerticalStaggeredGrid
 import androidx.compose.foundation.lazy.staggeredgrid.StaggeredGridCells
 import androidx.compose.foundation.lazy.staggeredgrid.items
+import androidx.compose.foundation.lazy.staggeredgrid.rememberLazyStaggeredGridState
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.material3.Card
 import androidx.compose.material3.HorizontalDivider
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Alignment.Companion.Center
 import androidx.compose.ui.Alignment.Companion.CenterHorizontally
@@ -35,8 +40,10 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import co.za.pokie.domain.model.HomeViewState
 import co.za.pokie.domain.model.Pokemon
 import co.za.pokie.presentation.R
+import co.za.pokie.presentation.theme.PokieAppTheme
 import co.za.pokie.presentation.ui.PreviewData
 import co.za.pokie.presentation.viewmodel.HomeViewModel
 import coil.compose.AsyncImage
@@ -48,32 +55,102 @@ fun HomeScreen(
     onPokemonClick: (String) -> Unit = {},
     viewModel: HomeViewModel = hiltViewModel(),
 ) {
+    val scrollState = rememberScrollState()
+    val isEnd  by remember {
+        derivedStateOf {
+            scrollState.value == scrollState.maxValue && scrollState.maxValue > 0
+        }
+    }
     val viewState by viewModel.homeViewState.collectAsStateWithLifecycle()
     LaunchedEffect(Unit) {
-        viewModel.loadPokemons()
+        viewModel.loadInitialPokemonsPage()
+    }
+
+
+
+
+    HomeContent(
+        isEnd = isEnd,
+        viewState = viewState,
+        onSearchQueryChange = { viewModel.filterList(it) },
+        modifier = modifier,
+        onScrolledToBottom = {
+            viewModel.loadMorePokemonPage()
+        },
+        onPokemonClick = onPokemonClick
+    )
+}
+
+@Composable
+private fun HomeContent(
+    modifier: Modifier = Modifier,
+    isEnd: Boolean = false,
+    viewState: HomeViewState = HomeViewState(),
+    onSearchQueryChange: (String) -> Unit = {},
+    onPokemonClick: (String) -> Unit = {},
+    onScrolledToBottom: () -> Unit = {}
+) {
+    LaunchedEffect(isEnd) {
+        if (isEnd) println("This is the end")
+
     }
     val errorMessage = viewState.errorDescription
 
-    Column(modifier) {
-        when {
-            viewState.isLoading -> {
-                Loader()
-            }
+    Scaffold(topBar = {
+        Column(verticalArrangement = spacedBy(16.dp)) {
+            OutlinedTextField(
+                placeholder = {
+                    Text(text = stringResource(R.string.search_pokemon))
+                },
+                modifier =
+                    Modifier
+                        .fillMaxWidth(),
+                value = viewState.searchQuery,
+                onValueChange = onSearchQueryChange,
+            )
+            HorizontalDivider(Modifier.padding(bottom = 16.dp))
+        }
+    }) {
+        Box(modifier
+            .padding(it)
+            .fillMaxSize()) {
+            when {
+                viewState.isLoading -> {
+                    Loader()
+                }
 
-            errorMessage != null -> {
-                Error(errorMessage = errorMessage)
-            }
+                errorMessage != null -> {
+                    Error(errorMessage = errorMessage)
+                }
 
-            else -> {
-                PokemonContent(
-                    searchQuery = viewState.searchQuery,
-                    filteredList = viewState.filteredList,
-                    pokemonList = viewState.pokemonList,
-                    onPokemonClick = onPokemonClick,
-                    onQueryChange = {
-                        viewModel.filterList(it)
-                    },
-                )
+                else -> {
+                    val gridState = rememberLazyStaggeredGridState()
+                    val isAtTheBottom by remember {
+                        derivedStateOf {
+
+                            val grid = gridState.layoutInfo
+                            val sss = grid.visibleItemsInfo
+
+                            if (grid.totalItemsCount == 0) {
+                                false
+                            } else {
+                                val current = sss.lastOrNull()
+                                current?.index == grid.totalItemsCount -1
+                            }
+                        }
+                    }
+
+                    PokemonContent(
+                        pokemonList = viewState.pokemonList,
+                        searchQuery = viewState.searchQuery,
+                        filteredList = viewState.filteredList,
+                        isPageLoading = viewState.isPageLoading,
+                        gridState = gridState,
+                        isAtBottom = isAtTheBottom,
+                        onPokemonClick = onPokemonClick,
+                        onScrolledToBottom = onScrolledToBottom,
+                    )
+                }
             }
         }
     }
@@ -84,25 +161,13 @@ fun PokemonContent(
     pokemonList: List<Pokemon>,
     modifier: Modifier = Modifier,
     searchQuery: String = "",
+    isPageLoading: Boolean = false,
     filteredList: List<Pokemon> = listOf(),
+    gridState: LazyStaggeredGridState = rememberLazyStaggeredGridState(),
     onPokemonClick: (id: String) -> Unit = {},
-    onQueryChange: (String) -> Unit = {},
+    onScrolledToBottom: () -> Unit = {},
+    isAtBottom: Boolean = false,
 ) {
-    Column(verticalArrangement = spacedBy(16.dp), modifier = Modifier.padding(top = 16.dp)) {
-        OutlinedTextField(
-            placeholder = {
-                Text(text = stringResource(R.string.search_pokemon))
-            },
-            modifier =
-            Modifier
-                .fillMaxWidth()
-                .align(CenterHorizontally),
-            value = searchQuery,
-            onValueChange = {
-                onQueryChange(it)
-            },
-        )
-        HorizontalDivider()
         val items = filteredList.ifEmpty { pokemonList }
         if (searchQuery.isNotBlank() && filteredList.isEmpty()) {
             Error(
@@ -110,54 +175,67 @@ fun PokemonContent(
                 errorMessage = stringResource(R.string.please_try_again),
             )
         } else {
-            LazyVerticalStaggeredGrid(
-                modifier = modifier.fillMaxWidth(),
-                columns = StaggeredGridCells.Fixed(2),
-                verticalItemSpacing = 16.dp,
-                horizontalArrangement = spacedBy(16.dp),
-            ) {
-                items(items, key = { pokemon -> pokemon.name }) { pokemon ->
-                    Card(modifier = Modifier.fillMaxWidth()) {
-                        Column(
-                            modifier =
-                            Modifier
-                                .fillMaxWidth()
-                                .padding(bottom = 16.dp)
-                                .clickable { onPokemonClick(pokemon.name) },
-                            horizontalAlignment = CenterHorizontally,
-                        ) {
-                            AsyncImage(
-                                contentScale = ContentScale.Crop,
-                                modifier =
-                                Modifier
-                                    .heightIn(80.dp, 120.dp)
-                                    .fillMaxWidth(0.5f),
-                                model =
-                                ImageRequest.Builder(LocalContext.current)
-                                    .data(pokemon.image)
-                                    .placeholder(R.drawable.ic_launcher_foreground)
-                                    .build(),
-                                contentDescription = pokemon.name,
-                            )
+
+            LaunchedEffect(isAtBottom) {
+                if(searchQuery.isBlank() && isAtBottom) {
+                    onScrolledToBottom()
+                }
+            }
+
+            Box(modifier = modifier.fillMaxSize()) {
+                LazyVerticalStaggeredGrid(
+                    state = gridState,
+                    modifier = Modifier
+                        .fillMaxWidth(),
+                    columns = StaggeredGridCells.Fixed(2),
+                    verticalItemSpacing = 16.dp,
+                    horizontalArrangement = spacedBy(16.dp),
+                ) {
+                    items(items, key = { pokemon -> pokemon.name }) { pokemon ->
+                        Card(modifier = Modifier.fillMaxWidth()) {
                             Column(
-                                modifier = Modifier, horizontalAlignment = Alignment.CenterHorizontally,
-                                verticalArrangement = spacedBy(8.dp),
+                                modifier =
+                                    Modifier
+                                        .fillMaxWidth()
+                                        .padding(bottom = 16.dp)
+                                        .clickable { onPokemonClick(pokemon.name) },
+                                horizontalAlignment = CenterHorizontally,
                             ) {
-                                Text(
-                                    text = pokemon.name,
-                                    fontSize = 20.sp,
-                                    fontWeight = FontWeight.Bold,
+                                AsyncImage(
+                                    contentScale = ContentScale.Crop,
+                                    modifier =
+                                        Modifier
+                                            .heightIn(80.dp, 120.dp)
+                                            .fillMaxWidth(0.5f),
+                                    model =
+                                        ImageRequest.Builder(LocalContext.current)
+                                            .data(pokemon.image)
+                                            .placeholder(R.drawable.ic_launcher_foreground)
+                                            .build(),
+                                    contentDescription = pokemon.name,
                                 )
-                                LabelledText(
-                                    stringResource(R.string.experience),
-                                    pokemon.baseExperience.toString(),
-                                )
+                                Column(
+                                    modifier = Modifier, horizontalAlignment = CenterHorizontally,
+                                    verticalArrangement = spacedBy(8.dp),
+                                ) {
+                                    Text(
+                                        text = pokemon.name,
+                                        fontSize = 20.sp,
+                                        fontWeight = FontWeight.Bold,
+                                    )
+                                    LabelledText(
+                                        stringResource(R.string.experience),
+                                        pokemon.baseExperience.toString(),
+                                    )
+                                }
                             }
                         }
                     }
                 }
+                if(isPageLoading) {
+                    LoadingDotsPulse(modifier.padding(bottom = 16.dp).align(Alignment.BottomCenter))
+                }
             }
-        }
     }
 }
 
@@ -205,7 +283,15 @@ fun Error(
 @Preview(showSystemUi = true)
 @Composable
 fun Preview() {
-    MaterialTheme {
-        PokemonContent(pokemonList = PreviewData.pokemonList)
+    PokieAppTheme {
+        PokemonContent(pokemonList = PreviewData.pokemonList, isPageLoading = true)
+    }
+}
+
+@Preview(showSystemUi = true)
+@Composable
+fun PreviewHome() {
+    PokieAppTheme {
+        HomeContent(viewState = HomeViewState(pokemonList = PreviewData.pokemonList))
     }
 }

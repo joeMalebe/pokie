@@ -1,9 +1,11 @@
 package co.za.pokie.data.repository
 
 import co.za.pokie.data.network.PokieApiService
+import co.za.pokie.domain.model.PageData
 import co.za.pokie.domain.model.Pokemon
 import co.za.pokie.domain.model.PokieRepository
 import junit.framework.TestCase.assertEquals
+import junit.framework.TestCase.assertTrue
 import junit.framework.TestCase.fail
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.toList
@@ -70,15 +72,32 @@ class PokieRepositoryTest {
     }
 
     @Test
-    fun `getPokemons should return pokemon data when successful`() = runTest {
-        val results = mutableListOf<Result<List<Pokemon>>>()
+    fun `given page 1 getPokemons should return pokemon data for 10 pokemons when successful`() = runTest {
+        val results = mutableListOf<Result<PageData>>()
 
-        pokieRepository.getPokemons().toList(results)
+        val pageNumber = 1
+        pokieRepository.getPokemons1(pageNumber).toList(results)
 
         val data = results.first().getOrNull()
-        assertEquals(4, results.size)
+        assertEquals(1, results.size)
         assertNotNull(results)
-        data?.let { assertEquals(20, it.size) } ?: fail("No results data")
+        data?.let {
+            assertEquals(10, it.pokemons.size)
+            assertEquals(pageNumber + 1, it.currentPage)
+            assertEquals(2, it.currentPage)
+        } ?: fail("No results data")
+    }
+
+    @Test
+    fun `when page number is more than maximum then getPokemons should emit empty list`() = runTest {
+        val results = mutableListOf<Result<PageData>>()
+
+        pokieRepository.getPokemons1(500).toList(results)
+
+        val data = results.first().getOrNull()
+        assertEquals(1, results.size)
+        assertNotNull(results)
+        data?.let { assertTrue( it.pokemons.isEmpty()) } ?: fail("Data should not be null ")
     }
 
     @Test
@@ -91,12 +110,12 @@ class PokieRepositoryTest {
                 .addConverterFactory(json.asConverterFactory("application/json".toMediaType()))
                 .build()
                 .create(PokieApiService::class.java)
-        val results = mutableListOf<Result<List<Pokemon>>>()
+        val results = mutableListOf<Result<PageData>>()
         val repository = PokieRepositoryImpl(testClient, Dispatchers.Unconfined)
         val response = MockResponse().setResponseCode(404)
         server.enqueue(response)
 
-        repository.getPokemons().toList(results)
+        repository.getPokemons1(1).toList(results)
         server.takeRequest()
 
         val data = results.first().exceptionOrNull()

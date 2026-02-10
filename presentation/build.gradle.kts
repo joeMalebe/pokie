@@ -66,6 +66,8 @@ dependencies {
     implementation(libs.androidx.navigation3.runtime)
     implementation(libs.androidx.lifecycle.viewmodel.navigation3)
     implementation(libs.converter.kotlinx.serialization)
+    implementation(libs.androidx.paging.compose)
+    implementation(libs.androidx.paging.runtime.ktx)
 
     ksp(libs.hilt.compiler)
     implementation(libs.hilt.android)

@@ -21,11 +21,14 @@ data class Stat(
     val value: Float,
 )
 
+data class PageData(val currentPage:Int, val isLastPage:Boolean, val pokemons: List<Pokemon>)
+
 data class HomeViewState(
     val pokemonList: List<Pokemon> = listOf(),
     val filteredList: List<Pokemon> = listOf(),
     val searchQuery: String = "",
     val isLoading: Boolean = false,
+    val isPageLoading: Boolean = false,
     val isDataLoaded: Boolean = false,
     val errorHeading: String? = null,
     val errorDescription: String? = null,
