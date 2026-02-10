@@ -1,7 +1,8 @@
 # pokie
-| Home screen | More details | Filter by search |
-| :--- | :---: | ---: |
-| <img width="1344" height="2992" alt="Image" src="https://github.com/user-attachments/assets/933e4d02-5161-4f55-9196-6d9fa490b34c" />  | <img width="1344" height="2992" alt="Image" src="https://github.com/user-attachments/assets/07689593-7ecf-4448-ad48-1e3ea3668b01" /> | <img width="1344" height="2992" alt="Image" src="https://github.com/user-attachments/assets/2294adc3-ce98-4d77-8a16-39b1429928c0" />  |
+| Home screen | More details | Filter by search | empty list |
+| :--- | :---: | ---: | ---: |
+| <img width="1344" height="2992" alt="Image" src="https://github.com/user-attachments/assets/f8b65cc4-245d-4513-ad04-f098cff7203d" />  | <img width="1344" height="2992" alt="Image" src="https://github.com/user-attachments/assets/ffb6fe48-a65f-4ce1-9b2a-27929ee36e65" /> | <img width="1344" height="2992" alt="Image" src="https://github.com/user-attachments/assets/1da9887e-1b85-420f-821d-03a3c9aed5b4" />  |<img width="1344" height="2992" alt="Image" src="https://github.com/user-attachments/assets/83b75926-7b26-458b-ac0e-6f1c157873b4" /> |
+
 
 
 ### Basic info
