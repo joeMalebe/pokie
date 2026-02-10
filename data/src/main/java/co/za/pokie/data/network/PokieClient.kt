@@ -6,7 +6,9 @@ import okhttp3.OkHttpClient
 import retrofit2.Retrofit
 import retrofit2.converter.kotlinx.serialization.asConverterFactory
 
-class PokieClient(okHttpClient: OkHttpClient) {
+class PokieClient(
+    okHttpClient: OkHttpClient,
+) {
     val json =
         Json {
             ignoreUnknownKeys
@@ -16,5 +18,6 @@ class PokieClient(okHttpClient: OkHttpClient) {
             .Builder()
             .client(okHttpClient)
             .addConverterFactory(json.asConverterFactory("application/json".toMediaType()))
-            .baseUrl(" https://pokeapi.co/").build()
+            .baseUrl(" https://pokeapi.co/")
+            .build()
 }

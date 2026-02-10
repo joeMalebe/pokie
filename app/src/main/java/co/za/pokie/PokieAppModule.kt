@@ -1,6 +1,5 @@
 package co.za.pokie
 
-
 import co.za.pokie.data.network.PokieApiService
 import co.za.pokie.data.network.PokieClient
 import co.za.pokie.data.repository.PokieRepositoryImpl
@@ -16,26 +15,20 @@ import okhttp3.logging.HttpLoggingInterceptor
 @InstallIn(SingletonComponent::class)
 class PokieAppModule {
     @Provides
-    fun pokieRepository(pokieService: PokieApiService): PokieRepository {
-        return PokieRepositoryImpl(pokieService)
-    }
+    fun pokieRepository(pokieService: PokieApiService): PokieRepository = PokieRepositoryImpl(pokieService)
 
     @Provides
-    fun okHttpClient(): OkHttpClient {
-        return OkHttpClient.Builder().addInterceptor(
+    fun okHttpClient(): OkHttpClient = OkHttpClient
+        .Builder()
+        .addInterceptor(
             HttpLoggingInterceptor().apply {
                 level = HttpLoggingInterceptor.Level.BODY
             },
         ).build()
-    }
 
     @Provides
-    fun retrofitClient(okHttpClient: OkHttpClient): PokieClient {
-        return PokieClient(okHttpClient)
-    }
+    fun retrofitClient(okHttpClient: OkHttpClient): PokieClient = PokieClient(okHttpClient)
 
     @Provides
-    fun service(retroFitClient: PokieClient): PokieApiService {
-        return retroFitClient.client.create(PokieApiService::class.java)
-    }
+    fun service(retroFitClient: PokieClient): PokieApiService = retroFitClient.client.create(PokieApiService::class.java)
 }

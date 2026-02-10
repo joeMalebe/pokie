@@ -17,10 +17,10 @@ fun PokieApp() {
     Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
         Box(
             modifier =
-                Modifier
-                    .fillMaxWidth()
-                    .padding(16.dp)
-                    .padding(innerPadding),
+            Modifier
+                .fillMaxWidth()
+                .padding(16.dp)
+                .padding(innerPadding),
         ) {
             PokieNavHost()
         }

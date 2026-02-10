@@ -9,5 +9,8 @@ sealed interface Route {
     data object Home : Route, NavKey
 
     @Serializable
-    data class Details(val name: String = "N/A") : Route, NavKey
+    data class Details(
+        val name: String = "N/A",
+    ) : Route,
+        NavKey
 }

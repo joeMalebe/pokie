@@ -32,12 +32,16 @@ class MapperTest {
         )
         assertEquals("shield-dust", result.abilities.first())
         assertEquals("bug", result.type.first())
-        assertEquals("0.1764706", result.stats.first().value.toString())
+        assertEquals(
+            "0.1764706",
+            result.stats
+                .first()
+                .value
+                .toString(),
+        )
     }
 
-    fun loadJson(name: String): String {
-        return this::class.java.classLoader!!
-            .getResource(name)!!
-            .readText()
-    }
+    fun loadJson(name: String): String = this::class.java.classLoader!!
+        .getResource(name)!!
+        .readText()
 }

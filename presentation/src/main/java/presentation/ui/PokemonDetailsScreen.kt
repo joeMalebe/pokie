@@ -32,8 +32,8 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
-import co.za.pokie.presentation.R
 import co.za.pokie.domain.model.Pokemon
+import co.za.pokie.presentation.R
 import co.za.pokie.presentation.theme.PokieAppTheme
 import co.za.pokie.presentation.viewmodel.HomeViewModel
 import coil.compose.AsyncImage
@@ -54,9 +54,9 @@ fun DetailsContent(
 ) {
     LazyColumn(
         modifier =
-            modifier
-                .fillMaxSize()
-                .padding(16.dp),
+        modifier
+            .fillMaxSize()
+            .padding(16.dp),
     ) {
         item {
             Column(Modifier.fillMaxWidth(), horizontalAlignment = CenterHorizontally) {
@@ -64,9 +64,9 @@ fun DetailsContent(
                     contentScale = ContentScale.Crop,
                     modifier = Modifier.heightIn(320.dp, 640.dp),
                     model =
-                        ImageRequest.Builder(LocalContext.current)
-                            .placeholder(R.drawable.ic_launcher_foreground).data(pokemon.image)
-                            .build(),
+                    ImageRequest.Builder(LocalContext.current)
+                        .placeholder(R.drawable.ic_launcher_foreground).data(pokemon.image)
+                        .build(),
                     contentDescription = pokemon.name,
                 )
             }
@@ -132,9 +132,9 @@ private fun Stats(
                 strokeCap = StrokeCap.Square,
                 progress = { it.value },
                 modifier =
-                    modifier
-                        .fillMaxWidth()
-                        .height(12.dp),
+                modifier
+                    .fillMaxWidth()
+                    .height(12.dp),
             )
         }
     }
@@ -165,10 +165,10 @@ fun PillTag(
         text = text,
         color = MaterialTheme.colorScheme.onPrimary,
         modifier =
-            modifier
-                .clip(RoundedCornerShape(50))
-                .background(color)
-                .padding(horizontal = 12.dp, vertical = 6.dp),
+        modifier
+            .clip(RoundedCornerShape(50))
+            .background(color)
+            .padding(horizontal = 12.dp, vertical = 6.dp),
     )
 }
 
@@ -183,10 +183,10 @@ private fun Vitals(
         Box(
             contentAlignment = Center,
             modifier =
-                Modifier
-                    .fillMaxWidth()
-                    .border(width = 1.dp, color = MaterialTheme.colorScheme.primary)
-                    .padding(16.dp),
+            Modifier
+                .fillMaxWidth()
+                .border(width = 1.dp, color = MaterialTheme.colorScheme.primary)
+                .padding(16.dp),
         ) {
             Text(value, fontSize = 18.sp, maxLines = 1, overflow = Ellipsis)
         }

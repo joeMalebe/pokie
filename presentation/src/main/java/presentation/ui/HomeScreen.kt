@@ -37,8 +37,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import co.za.pokie.presentation.R
 import co.za.pokie.domain.model.Pokemon
+import co.za.pokie.presentation.R
 import co.za.pokie.presentation.viewmodel.HomeViewModel
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
@@ -99,9 +99,9 @@ fun PokemonContent(
                 Text(text = stringResource(R.string.search_pokemon))
             },
             modifier =
-                Modifier
-                    .fillMaxWidth()
-                    .align(CenterHorizontally),
+            Modifier
+                .fillMaxWidth()
+                .align(CenterHorizontally),
             value = searchQuery,
             onValueChange = {
                 onQueryChange(it)
@@ -125,23 +125,23 @@ fun PokemonContent(
                     Card(modifier = Modifier.fillMaxWidth()) {
                         Column(
                             modifier =
-                                Modifier
-                                    .fillMaxWidth()
-                                    .padding(bottom = 16.dp)
-                                    .clickable { onPokemonClick(pokemon.name) },
+                            Modifier
+                                .fillMaxWidth()
+                                .padding(bottom = 16.dp)
+                                .clickable { onPokemonClick(pokemon.name) },
                             horizontalAlignment = CenterHorizontally,
                         ) {
                             AsyncImage(
                                 contentScale = ContentScale.Crop,
                                 modifier =
-                                    Modifier
-                                        .heightIn(80.dp, 120.dp)
-                                        .fillMaxWidth(0.5f),
+                                Modifier
+                                    .heightIn(80.dp, 120.dp)
+                                    .fillMaxWidth(0.5f),
                                 model =
-                                    ImageRequest.Builder(LocalContext.current)
-                                        .data(pokemon.image)
-                                        .placeholder(R.drawable.ic_launcher_foreground)
-                                        .build(),
+                                ImageRequest.Builder(LocalContext.current)
+                                    .data(pokemon.image)
+                                    .placeholder(R.drawable.ic_launcher_foreground)
+                                    .build(),
                                 contentDescription = pokemon.name,
                             )
                             Column(

@@ -1,6 +1,9 @@
 package co.za.pokie.domain.model
 
-data class PokemonData(val name: String, val url: String)
+data class PokemonData(
+    val name: String,
+    val url: String,
+)
 
 data class Pokemon(
     val name: String,
@@ -13,7 +16,10 @@ data class Pokemon(
     val type: List<String> = listOf(),
 )
 
-data class Stat(val name: String, val value: Float)
+data class Stat(
+    val name: String,
+    val value: Float,
+)
 
 data class HomeViewState(
     val pokemonList: List<Pokemon> = listOf(),

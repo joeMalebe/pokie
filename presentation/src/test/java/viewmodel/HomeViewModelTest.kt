@@ -33,49 +33,47 @@ class HomeViewModelTest {
     }
 
     @Test
-    fun `loadPokemons should return pokemon data when ApiResult is successful`() =
-        runTest {
-            val testDispatcher = Dispatchers.Unconfined
-            whenever(mockRepository.getPokemons()).thenReturn(flowOf(Result.success(TestData.pokemonList)))
-            val results = mutableListOf<HomeViewState>()
-            backgroundScope.launch(testDispatcher) {
-                viewModel.homeViewState.toList(results)
-            }
-
-            viewModel.loadPokemons(testDispatcher)
-
-            assertEquals(2, results.size)
-            assertNotNull(results)
-            assertTrue(results.first().isLoading)
-            assertFalse(results.first().isDataLoaded)
-            assertTrue(results[1].isDataLoaded)
-            assertFalse(results[1].isLoading)
-            assertFalse(results[1].pokemonList.isEmpty())
-            assertNull(results[1].errorDescription)
-            assertNull(results[1].errorHeading)
+    fun `loadPokemons should return pokemon data when ApiResult is successful`() = runTest {
+        val testDispatcher = Dispatchers.Unconfined
+        whenever(mockRepository.getPokemons()).thenReturn(flowOf(Result.success(TestData.pokemonList)))
+        val results = mutableListOf<HomeViewState>()
+        backgroundScope.launch(testDispatcher) {
+            viewModel.homeViewState.toList(results)
         }
+
+        viewModel.loadPokemons(testDispatcher)
+
+        assertEquals(2, results.size)
+        assertNotNull(results)
+        assertTrue(results.first().isLoading)
+        assertFalse(results.first().isDataLoaded)
+        assertTrue(results[1].isDataLoaded)
+        assertFalse(results[1].isLoading)
+        assertFalse(results[1].pokemonList.isEmpty())
+        assertNull(results[1].errorDescription)
+        assertNull(results[1].errorHeading)
+    }
 
     @Test
-    fun `loadPokemons should return error state when ApiResult is error`() =
-        runTest {
-            val testDispatcher = Dispatchers.Unconfined
-            whenever(mockRepository.getPokemons()).thenReturn(flowOf(Result.failure(RuntimeException("Error"))))
-            val results = mutableListOf<HomeViewState>()
-            backgroundScope.launch(testDispatcher) {
-                viewModel.homeViewState.toList(results)
-            }
-
-            viewModel.loadPokemons(testDispatcher)
-
-            assertEquals(2, results.size)
-            assertNotNull(results)
-            assertTrue(results.first().isLoading)
-            assertFalse(results.first().isDataLoaded)
-            assertTrue(results[1].isDataLoaded)
-            assertFalse(results[1].isLoading)
-            assertTrue(results[1].pokemonList.isEmpty())
-            assertEquals("Error", results[1].errorDescription)
+    fun `loadPokemons should return error state when ApiResult is error`() = runTest {
+        val testDispatcher = Dispatchers.Unconfined
+        whenever(mockRepository.getPokemons()).thenReturn(flowOf(Result.failure(RuntimeException("Error"))))
+        val results = mutableListOf<HomeViewState>()
+        backgroundScope.launch(testDispatcher) {
+            viewModel.homeViewState.toList(results)
         }
+
+        viewModel.loadPokemons(testDispatcher)
+
+        assertEquals(2, results.size)
+        assertNotNull(results)
+        assertTrue(results.first().isLoading)
+        assertFalse(results.first().isDataLoaded)
+        assertTrue(results[1].isDataLoaded)
+        assertFalse(results[1].isLoading)
+        assertTrue(results[1].pokemonList.isEmpty())
+        assertEquals("Error", results[1].errorDescription)
+    }
 }
 
 object TestData {
@@ -88,20 +86,20 @@ object TestData {
                 height = 7,
                 baseExperience = 64,
                 abilities =
-                    listOf(
-                        "tall",
-                        "fast",
-                        "small",
-                    ),
+                listOf(
+                    "tall",
+                    "fast",
+                    "small",
+                ),
                 stats =
-                    listOf(
-                        Stat(name = "hp", value = 0.28f),
-                        Stat(name = "attack", value = 0.50f),
-                        Stat(
-                            name = "defense",
-                            value = 0.84f,
-                        ),
+                listOf(
+                    Stat(name = "hp", value = 0.28f),
+                    Stat(name = "attack", value = 0.50f),
+                    Stat(
+                        name = "defense",
+                        value = 0.84f,
                     ),
+                ),
                 type = listOf("grass", "poison"),
             ),
             Pokemon(

@@ -41,28 +41,28 @@ fun LoadingDotsPulse(
                 initialValue = 0.8f,
                 targetValue = 1.2f,
                 animationSpec =
-                    infiniteRepeatable(
-                        animation =
-                            tween(
-                                durationMillis = 600,
-                                delayMillis = index * 200,
-                                easing = FastOutSlowInEasing,
-                            ),
-                        repeatMode = RepeatMode.Reverse,
+                infiniteRepeatable(
+                    animation =
+                    tween(
+                        durationMillis = 600,
+                        delayMillis = index * 200,
+                        easing = FastOutSlowInEasing,
                     ),
+                    repeatMode = RepeatMode.Reverse,
+                ),
                 label = "dotScale",
             )
 
             Box(
                 modifier =
-                    Modifier
-                        .size(dotSize)
-                        .graphicsLayer(
-                            scaleX = scale,
-                            scaleY = scale,
-                        )
-                        .clip(CircleShape)
-                        .background(dotColor),
+                Modifier
+                    .size(dotSize)
+                    .graphicsLayer(
+                        scaleX = scale,
+                        scaleY = scale,
+                    )
+                    .clip(CircleShape)
+                    .background(dotColor),
             )
         }
     }

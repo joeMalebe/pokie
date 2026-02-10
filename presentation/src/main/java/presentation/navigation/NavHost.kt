@@ -19,10 +19,10 @@ fun PokieNavHost() {
     NavDisplay(
         backStack = backStack,
         entryDecorators =
-            listOf(
-                rememberSaveableStateHolderNavEntryDecorator(),
-                rememberViewModelStoreNavEntryDecorator(),
-            ),
+        listOf(
+            rememberSaveableStateHolderNavEntryDecorator(),
+            rememberViewModelStoreNavEntryDecorator(),
+        ),
         onBack = { backStack.removeLastOrNull() },
         entryProvider = { key ->
             when (key) {

@@ -13,20 +13,20 @@ object PreviewData {
                 height = 7,
                 baseExperience = 64,
                 abilities =
-                    listOf(
-                        "tall",
-                        "fast",
-                        "small",
-                    ),
+                listOf(
+                    "tall",
+                    "fast",
+                    "small",
+                ),
                 stats =
-                    listOf(
-                        Stat(name = "hp", value = 0.28f),
-                        Stat(name = "attack", value = 0.50f),
-                        Stat(
-                            name = "defense",
-                            value = 0.84f,
-                        ),
+                listOf(
+                    Stat(name = "hp", value = 0.28f),
+                    Stat(name = "attack", value = 0.50f),
+                    Stat(
+                        name = "defense",
+                        value = 0.84f,
                     ),
+                ),
                 type = listOf("grass", "poison"),
             ),
             Pokemon(
