@@ -130,7 +130,7 @@ private fun Stats(
             LinearProgressIndicator(
                 trackColor = MaterialTheme.colorScheme.onSecondary,
                 color = MaterialTheme.colorScheme.secondary,
-                strokeCap = StrokeCap.Square,
+                strokeCap = StrokeCap.Round,
                 progress = { it.value },
                 modifier =
                 modifier
@@ -186,7 +186,7 @@ private fun Vitals(
             modifier =
             Modifier
                 .fillMaxWidth()
-                .border(width = 1.dp, color = MaterialTheme.colorScheme.primary)
+                .border(width = 1.dp, color = MaterialTheme.colorScheme.primary, shape = RoundedCornerShape(32.dp))
                 .padding(16.dp),
         ) {
             Text(value, fontSize = 18.sp, maxLines = 1, overflow = Ellipsis)
