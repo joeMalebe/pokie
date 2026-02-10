@@ -21,6 +21,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Alignment.Companion.Center
 import androidx.compose.ui.Alignment.Companion.CenterHorizontally
 import androidx.compose.ui.Modifier
@@ -139,7 +140,7 @@ fun PokemonContent(
                                 contentDescription = pokemon.name,
                             )
                             Column(
-                                modifier = Modifier,
+                                modifier = Modifier, horizontalAlignment = Alignment.CenterHorizontally,
                                 verticalArrangement = spacedBy(8.dp),
                             ) {
                                 Text(
@@ -166,7 +167,7 @@ fun LabelledText(
     value: String,
     modifier: Modifier = Modifier,
 ) {
-    Column(modifier.fillMaxWidth(0.5f)) {
+    Column(modifier.fillMaxWidth(0.5f), horizontalAlignment = CenterHorizontally) {
         Text(text = label, fontSize = 14.sp)
         Text(text = value, fontSize = 16.sp)
     }
