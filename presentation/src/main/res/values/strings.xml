@@ -1,0 +1,13 @@
+<resources>
+    <string name="app_name">PokieApp</string>
+    <string name="please_try_again_later">Please try again later.</string>
+    <string name="error_occurred">Error occurred.</string>
+    <string name="experience">Experience</string>
+    <string name="abilities">Abilities</string>
+    <string name="weight">Weight</string>
+    <string name="height">Height</string>
+    <string name="stats">Stats</string>
+    <string name="no_pokemon_found">No Pokemon found. \n</string>
+    <string name="please_try_again">Try to refine your search</string>
+    <string name="search_pokemon">Search...</string>
+</resources>

@@ -21,4 +21,6 @@ dependencyResolutionManagement {
 
 rootProject.name = "pokie"
 include(":app")
- 
+include(":data")
+include(":domain")
+include(":presentation")
