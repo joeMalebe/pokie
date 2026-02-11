@@ -2,9 +2,9 @@ package co.za.pokie.data.repository
 
 import co.za.pokie.data.network.PokieApiService
 import co.za.pokie.domain.model.PageData
-import co.za.pokie.domain.model.Pokemon
 import co.za.pokie.domain.model.PokieRepository
 import junit.framework.TestCase.assertEquals
+import junit.framework.TestCase.assertFalse
 import junit.framework.TestCase.assertTrue
 import junit.framework.TestCase.fail
 import kotlinx.coroutines.Dispatchers
@@ -76,7 +76,7 @@ class PokieRepositoryTest {
         val results = mutableListOf<Result<PageData>>()
 
         val pageNumber = 1
-        pokieRepository.getPokemons1(pageNumber).toList(results)
+        pokieRepository.getPokemons(pageNumber).toList(results)
 
         val data = results.first().getOrNull()
         assertEquals(1, results.size)
@@ -89,15 +89,38 @@ class PokieRepositoryTest {
     }
 
     @Test
+    fun `given existing pokemons when getPokemons then load new page of pokemons`() = runTest {
+        val results = mutableListOf<Result<PageData>>()
+        val results2 = mutableListOf<Result<PageData>>()
+
+        val pageNumber = 1
+        pokieRepository.getPokemons(pageNumber).toList(results)
+        pokieRepository.getPokemons(2).toList(results2)
+
+        val data = results.first().getOrNull()
+        assertEquals(1, results.size)
+        assertEquals(1, results2.size)
+        assertNotNull(results)
+        data?.let {
+            assertEquals(10, it.pokemons.size)
+            assertEquals(pageNumber + 1, it.currentPage)
+            assertEquals(2, it.currentPage)
+            assertEquals(3, results2.first().getOrNull()!!.currentPage)
+            assertTrue(results2.first().getOrNull()!!.isLastPage)
+            assertFalse(it.isLastPage)
+        } ?: fail("No results data")
+    }
+
+    @Test
     fun `when page number is more than maximum then getPokemons should emit empty list`() = runTest {
         val results = mutableListOf<Result<PageData>>()
 
-        pokieRepository.getPokemons1(500).toList(results)
+        pokieRepository.getPokemons(500).toList(results)
 
         val data = results.first().getOrNull()
         assertEquals(1, results.size)
         assertNotNull(results)
-        data?.let { assertTrue( it.pokemons.isEmpty()) } ?: fail("Data should not be null ")
+        data?.let { assertTrue(it.pokemons.isEmpty()) } ?: fail("Data should not be null ")
     }
 
     @Test
@@ -115,12 +138,55 @@ class PokieRepositoryTest {
         val response = MockResponse().setResponseCode(404)
         server.enqueue(response)
 
-        repository.getPokemons1(1).toList(results)
+        repository.getPokemons(1).toList(results)
         server.takeRequest()
 
         val data = results.first().exceptionOrNull()
         data?.let { assertEquals("Client Error", it.message) } ?: fail("No exception from results")
     }
+
+    @Test
+    fun `given getPokemons is successful when getPokemonDetail fails then return error`() = runTest {
+        val server = MockWebServer()
+        val results = mutableListOf<Result<PageData>>()
+        val repository = PokieRepositoryImpl(getTestClient(server), Dispatchers.Unconfined)
+        val pokemonList = MockResponse().setResponseCode(200).setBody(
+            """
+           {
+               "count":1350,
+               "next":"https://pokeapi.co/api/v2/pokemon/?offset=20&limit=20",
+               "previous":null,
+               "results":[
+                  {
+                     "name":"bulbasaur",
+                     "url":"http://${server.hostName}:${server.port}/api/"
+                  },
+                  {
+                     "name":"ivysaur",
+                     "url":"http://${server.hostName}:${server.port}/api/"
+                  },
+                  {
+                     "name":"venusaur",
+                     "url":"http://${server.hostName}:${server.port}/api/"
+                  }
+               ]
+           }
+            """.trimIndent(),
+        )
+        val pokemonDetailResponse = MockResponse().setResponseCode(500)
+        server.enqueue(pokemonList)
+        server.enqueue(pokemonDetailResponse)
+        repository.getPokemons(1).toList(results)
+        val data = results.first().exceptionOrNull()
+        data?.let { assertEquals("Server Error", it.message) } ?: fail("No exception from results")
+    }
+
+    private fun getTestClient(server: MockWebServer): PokieApiService = Retrofit
+        .Builder()
+        .baseUrl(server.url("/"))
+        .addConverterFactory(json.asConverterFactory("application/json".toMediaType()))
+        .build()
+        .create(PokieApiService::class.java)
 
     fun loadJson(name: String): String = this::class.java.classLoader!!
         .getResource(name)!!

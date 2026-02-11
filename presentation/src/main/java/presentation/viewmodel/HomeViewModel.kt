@@ -35,20 +35,20 @@ constructor(
     }
 
     fun loadInitialPokemonsPage(coroutineContext: CoroutineContext = Dispatchers.IO) {
-        if(_homeViewData.value.isDataLoaded) return
+        if (_homeViewData.value.isDataLoaded) return
         viewModelScope.launch(coroutineContext) {
             loadPageData()
         }
     }
 
     private suspend fun loadPageData() {
-            pokieRepository.getPokemons1(pageNumber).collect { result ->
-                result.onSuccess { pageData ->
-                    handlePageLoadSuccessResult(pageData)
-                }.onFailure { result ->
-                    handlePageLoadFailureResult(result)
-                }
+        pokieRepository.getPokemons(pageNumber).collect { result ->
+            result.onSuccess { pageData ->
+                handlePageLoadSuccessResult(pageData)
+            }.onFailure { result ->
+                handlePageLoadFailureResult(result)
             }
+        }
     }
 
     private fun handlePageLoadFailureResult(result: Throwable) {
@@ -58,7 +58,8 @@ constructor(
                 isPageLoading = false,
                 isLoading = false,
                 searchQuery = "",
-                errorDescription = result.message,
+                errorDescription = if (it.pokemonList.isEmpty()) result.message else null,
+                pageLoadingErrorDescription = if (it.pokemonList.isNotEmpty()) result.message else null,
             )
         }
     }

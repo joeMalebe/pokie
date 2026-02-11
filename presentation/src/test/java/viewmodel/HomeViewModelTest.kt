@@ -24,9 +24,7 @@ import org.mockito.Mock
 import org.mockito.Mockito.mock
 import org.mockito.kotlin.any
 import org.mockito.kotlin.atMost
-import org.mockito.kotlin.times
 import org.mockito.kotlin.verify
-import org.mockito.kotlin.verifyNoInteractions
 import org.mockito.kotlin.whenever
 
 class HomeViewModelTest {
@@ -43,16 +41,16 @@ class HomeViewModelTest {
     @Test
     fun `loadInitialPokemonsPage should return pokemon data when ApiResult is successful`() = runTest {
         val testDispatcher = Dispatchers.Unconfined
-        whenever(mockRepository.getPokemons1(1)).thenReturn(
+        whenever(mockRepository.getPokemons(1)).thenReturn(
             flowOf(
                 Result.success(
                     PageData(
                         currentPage = 1,
                         isLastPage = false,
-                        pokemons = PreviewData.pokemonList
-                    )
-                )
-            )
+                        pokemons = PreviewData.pokemonList,
+                    ),
+                ),
+            ),
         )
         val results = mutableListOf<HomeViewState>()
         backgroundScope.launch(testDispatcher) {
@@ -70,22 +68,21 @@ class HomeViewModelTest {
         assertFalse(results[1].pokemonList.isEmpty())
         assertNull(results[1].errorDescription)
         assertNull(results[1].errorHeading)
-
     }
 
     @Test
     fun `loadInitialPokemons should only be called once`() = runTest {
         val testDispatcher = Dispatchers.Unconfined
-        whenever(mockRepository.getPokemons1(1)).thenReturn(
+        whenever(mockRepository.getPokemons(1)).thenReturn(
             flowOf(
                 Result.success(
                     PageData(
                         currentPage = 1,
                         isLastPage = false,
-                        pokemons = PreviewData.pokemonList
-                    )
-                )
-            )
+                        pokemons = PreviewData.pokemonList,
+                    ),
+                ),
+            ),
         )
         val results = mutableListOf<HomeViewState>()
         backgroundScope.launch(testDispatcher) {
@@ -95,22 +92,22 @@ class HomeViewModelTest {
         viewModel.loadInitialPokemonsPage(testDispatcher)
         viewModel.loadInitialPokemonsPage(testDispatcher)
 
-        verify(mockRepository, atMost(1)).getPokemons1(any(), any())
+        verify(mockRepository, atMost(1)).getPokemons(any(), any())
     }
 
     @Test
     fun `loadMorePokemonPage should return pokemon data when ApiResult is successful`() = runTest {
         val testDispatcher = Dispatchers.Unconfined
-        whenever(mockRepository.getPokemons1(1)).thenReturn(
+        whenever(mockRepository.getPokemons(1)).thenReturn(
             flowOf(
                 Result.success(
                     PageData(
                         currentPage = 1,
                         isLastPage = false,
-                        pokemons = PreviewData.pokemonList
-                    )
-                )
-            )
+                        pokemons = PreviewData.pokemonList,
+                    ),
+                ),
+            ),
         )
         val results = mutableListOf<HomeViewState>()
         backgroundScope.launch(testDispatcher) {
@@ -134,16 +131,16 @@ class HomeViewModelTest {
     @Test
     fun `loadMorePokemonPage should not run when current page is the last page`() = runTest {
         val testDispatcher = Dispatchers.Unconfined
-        whenever(mockRepository.getPokemons1(1)).thenReturn(
+        whenever(mockRepository.getPokemons(1)).thenReturn(
             flowOf(
                 Result.success(
                     PageData(
                         currentPage = 1,
                         isLastPage = true,
-                        pokemons = PreviewData.pokemonList
-                    )
-                )
-            )
+                        pokemons = PreviewData.pokemonList,
+                    ),
+                ),
+            ),
         )
         val results = mutableListOf<HomeViewState>()
         backgroundScope.launch(testDispatcher) {
@@ -153,13 +150,13 @@ class HomeViewModelTest {
         viewModel.loadMorePokemonPage(testDispatcher)
         viewModel.loadMorePokemonPage(testDispatcher)
 
-        verify(mockRepository, atMost(1)).getPokemons1(any(),any())
+        verify(mockRepository, atMost(1)).getPokemons(any(), any())
     }
 
     @Test
     fun `loadPokemons should return error state when ApiResult is error`() = runTest {
         val testDispatcher = Dispatchers.Unconfined
-        whenever(mockRepository.getPokemons1()).thenReturn(flowOf(Result.failure(RuntimeException("Error"))))
+        whenever(mockRepository.getPokemons()).thenReturn(flowOf(Result.failure(RuntimeException("Error"))))
         val results = mutableListOf<HomeViewState>()
         backgroundScope.launch(testDispatcher) {
             viewModel.homeViewState.toList(results)
@@ -178,18 +175,50 @@ class HomeViewModelTest {
     }
 
     @Test
+    fun `given pokemons list when getPokemon page load fails then emit page error`() = runTest {
+        val testDispatcher = Dispatchers.Unconfined
+        whenever(mockRepository.getPokemons(1)).thenReturn(
+            flowOf(
+                Result.success(
+                    PageData(
+                        currentPage = 2,
+                        isLastPage = false,
+                        pokemons = PreviewData.pokemonList,
+                    ),
+                ),
+            ),
+        )
+        whenever(mockRepository.getPokemons(2)).thenReturn(
+            flowOf(
+                Result.failure(
+                    RuntimeException("Error"),
+                ),
+            ),
+        )
+
+        val results = mutableListOf<HomeViewState>()
+        backgroundScope.launch(testDispatcher) {
+            viewModel.homeViewState.toList(results)
+        }
+        viewModel.loadInitialPokemonsPage(testDispatcher)
+        viewModel.loadMorePokemonPage(testDispatcher)
+
+        assertEquals("Error", results[3].pageLoadingErrorDescription)
+    }
+
+    @Test
     fun `given pokemons list when filterList then emit filtered pokemons results`() = runTest {
         val testDispatcher = Dispatchers.Unconfined
-        whenever(mockRepository.getPokemons1(1)).thenReturn(
+        whenever(mockRepository.getPokemons(1)).thenReturn(
             flowOf(
                 Result.success(
                     PageData(
                         currentPage = 1,
                         isLastPage = false,
-                        pokemons = PreviewData.pokemonList
-                    )
-                )
-            )
+                        pokemons = PreviewData.pokemonList,
+                    ),
+                ),
+            ),
         )
         val results = mutableListOf<HomeViewState>()
         backgroundScope.launch(testDispatcher) {
@@ -205,16 +234,16 @@ class HomeViewModelTest {
     @Test
     fun `given pokemons list when getPokemonsDetail then return pokemon details`() = runTest {
         val testDispatcher = Dispatchers.Unconfined
-        whenever(mockRepository.getPokemons1(1)).thenReturn(
+        whenever(mockRepository.getPokemons(1)).thenReturn(
             flowOf(
                 Result.success(
                     PageData(
                         currentPage = 1,
                         isLastPage = false,
-                        pokemons = PreviewData.pokemonList
-                    )
-                )
-            )
+                        pokemons = PreviewData.pokemonList,
+                    ),
+                ),
+            ),
         )
         val results = mutableListOf<HomeViewState>()
         backgroundScope.launch(testDispatcher) {
@@ -222,13 +251,11 @@ class HomeViewModelTest {
         }
         viewModel.loadInitialPokemonsPage(testDispatcher)
 
-        viewModel.getPokemonDetails("charmeleon")?.let {
-            result ->
+        viewModel.getPokemonDetails("charmeleon")?.let { result ->
 
             assertEquals("charmeleon", result.name)
             assertEquals(11, result.height)
         } ?: fail("no Pokemon with name in list")
-
     }
 }
 
