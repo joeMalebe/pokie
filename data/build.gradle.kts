@@ -51,7 +51,7 @@ dependencies {
     implementation(libs.logging.interceptor)
     implementation(libs.converter.kotlinx.serialization)
     implementation(libs.ktor.serialization.kotlinx.json)
-
+    implementation(libs.androidx.paging.runtime.ktx)
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
 

@@ -3,6 +3,7 @@ package co.za.pokie.presentation.viewmodel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import co.za.pokie.domain.model.HomeViewState
+import co.za.pokie.domain.model.PageData
 import co.za.pokie.domain.model.Pokemon
 import co.za.pokie.domain.model.PokieRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -20,31 +21,56 @@ class HomeViewModel
 constructor(
     private val pokieRepository: PokieRepository,
 ) : ViewModel() {
+    private var pageNumber = 1
+    private var isPaginationComplete = false
     private val _homeViewData = MutableStateFlow(HomeViewState(isLoading = true))
     val homeViewState = _homeViewData.asStateFlow()
 
-    fun loadPokemons(coroutineContext: CoroutineContext = Dispatchers.IO) {
+    fun loadMorePokemonPage(coroutineContext: CoroutineContext = Dispatchers.IO) {
+        if (isPaginationComplete) return
+        _homeViewData.update { it.copy(isLoading = false, isPageLoading = true) }
         viewModelScope.launch(coroutineContext) {
-            if (_homeViewData.value.isDataLoaded) return@launch
-            pokieRepository.getPokemons().collect { result ->
-                result.onSuccess { pokemons ->
-                    _homeViewData.update { currentState ->
-                        currentState.copy(
-                            isLoading = false,
-                            isDataLoaded = true,
-                            pokemonList = (currentState.pokemonList + pokemons).distinctBy { pokemon -> pokemon.name },
-                        )
-                    }
-                }.onFailure {
-                    _homeViewData.update { currentState ->
-                        currentState.copy(
-                            isLoading = false,
-                            isDataLoaded = true,
-                            errorDescription = it.message,
-                        )
-                    }
+            loadPageData()
+        }
+    }
+
+    fun loadInitialPokemonsPage(coroutineContext: CoroutineContext = Dispatchers.IO) {
+        if(_homeViewData.value.isDataLoaded) return
+        viewModelScope.launch(coroutineContext) {
+            loadPageData()
+        }
+    }
+
+    private suspend fun loadPageData() {
+            pokieRepository.getPokemons1(pageNumber).collect { result ->
+                result.onSuccess { pageData ->
+                    handlePageLoadSuccessResult(pageData)
+                }.onFailure { result ->
+                    handlePageLoadFailureResult(result)
                 }
             }
+    }
+
+    private fun handlePageLoadFailureResult(result: Throwable) {
+        _homeViewData.update {
+            it.copy(
+                isDataLoaded = true,
+                isPageLoading = false,
+                isLoading = false,
+                searchQuery = "",
+                errorDescription = result.message,
+            )
+        }
+    }
+
+    private fun handlePageLoadSuccessResult(pageData: PageData) {
+        _homeViewData.update { currentState ->
+            pageNumber = pageData.currentPage
+            isPaginationComplete = pageData.isLastPage
+            HomeViewState(
+                isDataLoaded = true,
+                pokemonList = (currentState.pokemonList + pageData.pokemons).distinctBy { pokemon -> pokemon.name },
+            )
         }
     }
 
