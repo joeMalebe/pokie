@@ -3,8 +3,8 @@ package viewmodel
 import co.za.pokie.domain.model.HomeViewState
 import co.za.pokie.domain.model.PageData
 import co.za.pokie.domain.model.Pokemon
-import co.za.pokie.domain.model.PokieRepository
 import co.za.pokie.domain.model.Stat
+import co.za.pokie.domain.repository.PokieRepository
 import co.za.pokie.presentation.ui.PreviewData
 import co.za.pokie.presentation.viewmodel.HomeViewModel
 import junit.framework.TestCase.assertEquals

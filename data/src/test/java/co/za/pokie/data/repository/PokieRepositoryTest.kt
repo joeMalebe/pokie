@@ -2,7 +2,7 @@ package co.za.pokie.data.repository
 
 import co.za.pokie.data.network.PokieApiService
 import co.za.pokie.domain.model.PageData
-import co.za.pokie.domain.model.PokieRepository
+import co.za.pokie.domain.repository.PokieRepository
 import junit.framework.TestCase.assertEquals
 import junit.framework.TestCase.assertFalse
 import junit.framework.TestCase.assertTrue

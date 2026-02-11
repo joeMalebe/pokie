@@ -7,7 +7,7 @@ import co.za.pokie.data.util.mapToPokemon
 import co.za.pokie.domain.model.PageData
 import co.za.pokie.domain.model.Pokemon
 import co.za.pokie.domain.model.PokemonData
-import co.za.pokie.domain.model.PokieRepository
+import co.za.pokie.domain.repository.PokieRepository
 import io.ktor.utils.io.ioDispatcher
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.Flow
