@@ -21,7 +21,7 @@ data class Stat(
     val value: Float,
 )
 
-data class PageData(val currentPage:Int, val isLastPage:Boolean, val pokemons: List<Pokemon>)
+data class PageData(val currentPage: Int, val isLastPage: Boolean, val pokemons: List<Pokemon>)
 
 data class HomeViewState(
     val pokemonList: List<Pokemon> = listOf(),
@@ -32,4 +32,5 @@ data class HomeViewState(
     val isDataLoaded: Boolean = false,
     val errorHeading: String? = null,
     val errorDescription: String? = null,
+    val pageLoadingErrorDescription: String? = null,
 )

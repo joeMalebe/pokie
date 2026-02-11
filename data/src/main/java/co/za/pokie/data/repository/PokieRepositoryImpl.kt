@@ -22,55 +22,10 @@ constructor(
     private val client: PokieApiService,
     private val dispatcher: CoroutineDispatcher = ioDispatcher(),
 ) : PokieRepository {
-    private var pokemons : List<PokemonData> = listOf()
-    override fun getPokemons(): Flow<Result<List<Pokemon>>> = flow {
-        when (val pokemonList = getPokemonList()) {
-            is ApiResult.Success -> {
-                val pokemonDetailsList = mutableListOf<Pokemon>()
-                pokemonList.data.forEachIndexed { index, data ->
-                    val pokemonDetail = getPokemonDetail(data.url)
-                    if (pokemonDetail is ApiResult.Success) {
-                        pokemonDetailsList.add(pokemonDetail.data)
-                    }
-                    if (shouldEmitResults(index, pokemonDetailsList, pokemonList)) {
-                        emit(Result.success(pokemonDetailsList))
-                    }
-                }
-            }
+    private var pokemons: List<PokemonData> = listOf()
 
-            is ApiResult.Error -> {
-                emit(Result.failure(RuntimeException(pokemonList.message)))
-            }
-
-            is ApiResult.NoInternetError -> {
-                emit(Result.failure(RuntimeException(pokemonList.message)))
-            }
-        }
-    }
-
-//    override fun getPokemons(pageNumber: Int, pageSize:Int): Flow<Result<List<Pokemon>>> = flow {
-//        if(pokemons.isNotEmpty()) {
-//            pagination(pokemons, pageNumber, pageSize)
-//        } else {
-//            when (val pokemonList = getPokemonList()) {
-//                is ApiResult.Success -> {
-//                    pokemons = pokemonList.data
-//                    pagination(pokemons, pageNumber, pageSize)
-//                }
-//
-//                is ApiResult.Error -> {
-//                    emit(Result.failure(RuntimeException(pokemonList.message)))
-//                }
-//
-//                is ApiResult.NoInternetError -> {
-//                    emit(Result.failure(RuntimeException(pokemonList.message)))
-//                }
-//            }
-//        }
-//    }
-
-    override fun getPokemons1(pageNumber: Int, pageSize:Int): Flow<Result<PageData>> = flow {
-        if(pokemons.isNotEmpty()) {
+    override fun getPokemons(pageNumber: Int, pageSize: Int): Flow<Result<PageData>> = flow {
+        if (pokemons.isNotEmpty()) {
             loadPageData(pokemons, pageNumber, pageSize)
         } else {
             when (val pokemonList = getPokemonList()) {
@@ -82,63 +37,18 @@ constructor(
                 is ApiResult.Error -> {
                     emit(Result.failure(RuntimeException(pokemonList.message)))
                 }
-
-                is ApiResult.NoInternetError -> {
-                    emit(Result.failure(RuntimeException(pokemonList.message)))
-                }
             }
         }
     }
 
-//    fun getPokemonsPage(pageNumber: Int, pageSize:Int): Flow<Result<List<Pokemon>>> = flow {
-//        if(pokemons.isNotEmpty()) {
-//            pagination(pokemons, pageNumber, pageSize)
-//        } else {
-//            when (val pokemonList = getPokemonList()) {
-//                is ApiResult.Success -> {
-//                    pokemons = pokemonList.data
-//                    pagination(pokemons, pageNumber, pageSize)
-//                }
-//
-//                is ApiResult.Error -> {
-//                    emit(Result.failure(RuntimeException(pokemonList.message)))
-//                }
-//
-//                is ApiResult.NoInternetError -> {
-//                    emit(Result.failure(RuntimeException(pokemonList.message)))
-//                }
-//            }
-//        }
-//    }
-//
-//    private suspend fun FlowCollector<Result<List<Pokemon>>>.pagination(
-//        pokemons: List<PokemonData>,
-//        pageNumber: Int,
-//        pageSize: Int
-//    ) {
-//        val pokemonDetailsList = mutableListOf<Pokemon>()
-//        if (pageNumber > Math.ceilDivExact(pokemons.size, pageSize)  ) {
-//            return emit(Result.success(pokemonDetailsList))
-//        }
-//        val pageRange = getRange(pageNumber, pokemons.size, pageSize)
-//        pokemons.subList(pageRange.first, pageRange.last).forEach { data ->
-//            val pokemonDetail = getPokemonDetail(data.url)
-//            if (pokemonDetail is ApiResult.Success) {
-//                pokemonDetailsList.add(pokemonDetail.data)
-//            }
-//        }
-//        return emit(Result.success(pokemonDetailsList))
-//    }
-
     private suspend fun FlowCollector<Result<PageData>>.loadPageData(
         pokemons: List<PokemonData>,
         pageNumber: Int,
-        pageSize: Int
+        pageSize: Int,
     ) {
-
         val lastPage = Math.ceilDivExact(pokemons.size, pageSize)
         if (isPaginationComplete(pageNumber, lastPage)) {
-            return emit(Result.success(PageData(currentPage = pageNumber,isLastPage = true,pokemons = emptyList())))
+            return emit(Result.success(PageData(currentPage = pageNumber, isLastPage = true, pokemons = emptyList())))
         }
         val pageRange = getRange(pageNumber, pokemons.size, pageSize)
         val pokemonDetailsList = mutableListOf<Pokemon>()
@@ -156,25 +66,19 @@ constructor(
                 PageData(
                     currentPage = nextPage,
                     isLastPage = isPaginationComplete(nextPage, lastPage),
-                    pokemons = pokemonDetailsList
-                )
-            )
+                    pokemons = pokemonDetailsList,
+                ),
+            ),
         )
     }
 
-    private fun isPaginationComplete(pageNumber: Int, lastPage: Int): Boolean = pageNumber >= lastPage
+    private fun isPaginationComplete(pageNumber: Int, lastPage: Int): Boolean = pageNumber > lastPage
 
-    private fun getRange(page:Int, size:Int, itemsInPage: Int = 10): IntRange {
-        val start  = ((page - 1) * itemsInPage)
+    private fun getRange(page: Int, size: Int, itemsInPage: Int = 10): IntRange {
+        val start = ((page - 1) * itemsInPage)
         val end = (page * itemsInPage).coerceAtMost(size)
         return start..end
     }
-
-    private fun shouldEmitResults(
-        index: Int,
-        pokemonDetailsList: MutableList<Pokemon>,
-        pokemonList: ApiResult.Success<List<PokemonData>>,
-    ): Boolean = index != 0 && pokemonDetailsList.size % 5 == 0 || index == pokemonList.data.lastIndex
 
     private suspend fun getPokemonList(): ApiResult<List<PokemonData>> = withContext(dispatcher) {
         val response =
@@ -189,10 +93,6 @@ constructor(
 
             is ApiResult.Error -> {
                 ApiResult.Error(response.message)
-            }
-
-            is ApiResult.NoInternetError -> {
-                ApiResult.NoInternetError(response.message)
             }
         }
     }
@@ -209,10 +109,6 @@ constructor(
 
             is ApiResult.Error -> {
                 ApiResult.Error(response.message)
-            }
-
-            is ApiResult.NoInternetError -> {
-                ApiResult.NoInternetError(response.message)
             }
         }
     }

@@ -1,7 +1,6 @@
 package co.za.pokie.data.util
 
 import retrofit2.Response
-import java.net.ConnectException
 
 sealed class ApiResult<out T> {
     data class Success<T>(
@@ -9,10 +8,6 @@ sealed class ApiResult<out T> {
     ) : ApiResult<T>()
 
     data class Error(
-        val message: String? = null,
-    ) : ApiResult<Nothing>()
-
-    data class NoInternetError(
         val message: String? = null,
     ) : ApiResult<Nothing>()
 }
@@ -25,8 +20,6 @@ suspend inline fun <reified T> callApiClient(crossinline call: suspend () -> Res
     } else {
         ApiResult.Error(response.message())
     }
-} catch (e: ConnectException) {
-    ApiResult.NoInternetError(e.message ?: "Something went wrong with your connection")
 } catch (e: Exception) {
     ApiResult.Error(e.message ?: "Something went wrong")
 }
