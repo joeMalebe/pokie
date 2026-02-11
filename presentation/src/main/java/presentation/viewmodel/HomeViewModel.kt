@@ -5,7 +5,7 @@ import androidx.lifecycle.viewModelScope
 import co.za.pokie.domain.model.HomeViewState
 import co.za.pokie.domain.model.PageData
 import co.za.pokie.domain.model.Pokemon
-import co.za.pokie.domain.model.PokieRepository
+import co.za.pokie.domain.repository.PokieRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow

@@ -2,7 +2,7 @@ package co.za.pokie
 
 import co.za.pokie.data.network.PokieApiService
 import co.za.pokie.data.repository.PokieRepositoryImpl
-import co.za.pokie.domain.model.PokieRepository
+import co.za.pokie.domain.repository.PokieRepository
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
