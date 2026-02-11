@@ -3,6 +3,12 @@
 | :--- | :---: | ---: | ---: |
 | <img width="1344" height="2992" alt="Image" src="https://github.com/user-attachments/assets/f8b65cc4-245d-4513-ad04-f098cff7203d" />  | <img width="1344" height="2992" alt="Image" src="https://github.com/user-attachments/assets/ffb6fe48-a65f-4ce1-9b2a-27929ee36e65" /> | <img width="1344" height="2992" alt="Image" src="https://github.com/user-attachments/assets/1da9887e-1b85-420f-821d-03a3c9aed5b4" />  |<img width="1344" height="2992" alt="Image" src="https://github.com/user-attachments/assets/83b75926-7b26-458b-ac0e-6f1c157873b4" /> |
 
+# pokie dark theme
+| Home screen | More details | Filter by search | empty list |
+| :--- | :---: | ---: | ---: |
+| <img width="1280" height="2856" alt="Image" src="https://github.com/user-attachments/assets/9d7635e4-245f-428a-98fc-e569cb4d485d" />  | <img width="1280" height="2856" alt="Image" src="https://github.com/user-attachments/assets/1d1a889b-3c5a-4d69-88c4-d4893e1d68f2" /> | <img width="1280" height="2856" alt="Image" src="https://github.com/user-attachments/assets/662102ea-0655-45d0-b53c-c44bf362e0b5" /> | <img width="1280" height="2856" alt="Image" src="https://github.com/user-attachments/assets/d04a22b8-ac56-4227-bc20-a8388c8ff3d7" /> |
+
+
 
 
 ### Basic info
@@ -18,10 +24,17 @@ An emulator or physical Android device
 
 ### Architecture considerations
 
-- THe app is built using mvvm and clean architecture. The presentation layer depends on the domain layer which provides 
-the contract via a repository for simplicity. 
-- In a larger application we can hide the repository and rather expose a use Case contract between the two boundaries
-to improve reusability of some functionality across different features.
+- The app is built using MVVM and Clean Architecture. The presentation layer depends on the domain layer, which provides the contract via a repository for simplicity.
+
+- In a larger application, we could hide the repository and instead expose a Use Case contract between the two boundaries to improve reuse of functionality across different features.
+
+- I assumed that the API does not provide server-side paging; therefore, pagination is handled on the client side. The app first retrieves a list of all Pokémon, then collects additional details as the user scrolls through different pages, simulating an infinite scroll mechanism.
+
+- Since the Pokémon details are loaded progressively, it was appropriate to use Kotlin Flows to emit periodic streams of new data, providing seamless updates to the UI as new items are emitted to the presentation layer.
+
+- For a more standard paging implementation, one could consider adopting the Paging 3 component in the future. However, this simple use case warranted a lightweight manual implementation.
+
+- In the compose ui, all the dimensions, paddings and weights are hardcode just for speed in the implementation. In a large application one would extract these to theme constants to ensure consistency across the application.
 
 
 ### Libraries used
